@@ -19,7 +19,7 @@ mongoose
   .catch(err => console.log(err)); //Lỗi kết nối với đb
 
 //Use routes (Mỗi lần tạo 1 route mới thì phải use nó ở đây thì mới chạy đc)
-app.use("/categories", categories);
+app.use("/api/category", categories);
 
 const port = process.env.PORT || 5000;
 

@@ -10,18 +10,18 @@ const Category = require("../../models/Category");
 router.get("/", (req, res) => {
   Category.find()
     .sort({ date: -1 }) //desc = -1 acs = 1
-    .then(items => res.json(items)); //return lại item
+    .then(category => res.json(category)); //return lại item
 });
 
 //@route POST /categories   (dùng phương thức POST và route là /categories)
 //@desc  Create a category  (miểu tả APi làm gì)
 //@access Public            (access hiện tại là public vì Trung chưa tạo authentication)
-router.post("/", (req, res) => {
-  const newItem = new Category({
+router.post("/add", (req, res) => {
+  const newCategory = new Category({
     name: req.body.name
   });
 
-  newItem.save().then(item => res.json(item)); //reutnr lại item đã save đc
+  newCategory.save().then(category => res.json(category)); //reutnr lại item đã save đc
 });
 
 //@route DELETE /categories/:id (dùng phương thức POST và route là /categories/:id)

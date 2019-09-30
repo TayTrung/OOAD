@@ -1,7 +1,7 @@
 {
   "name": "ooad",
   "version": "1.0.0",
-  "description": "Caffee managment system built with MERN stack",
+  "description": "Coffee managment system built with MERN stack",
   "main": "server.js",
   "scripts": {
     "client-install": "npm install --prefix client",

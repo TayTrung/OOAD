@@ -1,26 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Menu from "./components/Menu";
+import Category from "./components/Content/Category";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { Route } from "react-router-dom";
+
+export default class App extends Component {
+  render() {
+    return (
+      <React.Fragment>
+        <Header />
+        <Menu />
+        {/* Thay đổi content ở bên trong này
+            Thêm route vào để thay đổi content */}
+        <Route exact path="/category/add" component={Category}></Route>
+        {/* Thay đổi content ở bên trong này */}
+        <Footer />
+      </React.Fragment>
+    );
+  }
 }
-
-export default App;
