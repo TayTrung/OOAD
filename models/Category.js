@@ -8,6 +8,11 @@ const CategorySchema = new Schema({
   name: {
     type: String, // Kiểu String
     required: true //=> khi insert vào thì bắt buộc phải có "name"
+  },
+  createAt: {
+    type: Date,
+    required: true,
+    default: Date.now()
   }
 });
 

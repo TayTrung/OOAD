@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 export default class Menu extends Component {
   render() {
@@ -101,12 +102,12 @@ export default class Menu extends Component {
                 </ul>
               </li>
               <li>
-                <a href="pages/widgets.html">
-                  <i className="fa fa-th" /> <span>Widgets</span>
+                <Link to="/category">
+                  <i className="fa fa-th" /> <span>Category</span>
                   <span className="pull-right-container">
                     <small className="label pull-right bg-green">new</small>
                   </span>
-                </a>
+                </Link>
               </li>
               <li className="treeview">
                 <a href="fake_url">
