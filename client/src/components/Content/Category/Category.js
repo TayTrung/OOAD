@@ -1,27 +1,83 @@
 import React, { Component } from "react";
-import axios from "axios";
 import CategoryModal from "./CategoryModal";
 import CategoryRow from "./CategoryRow";
+import { connect } from "react-redux";
+import {
+  getCategories,
+  deleteCategory
+} from "../../../actions/categoryActions";
+import PropTypes from "prop-types";
+import axios from "axios";
 
-export default class Category extends Component {
+class Category extends Component {
   state = {
-    categories: []
-    // modal: false
+    sort: [{ value: "1" }, { value: "2" }, { value: "3" }],
+    select: "2",
+    currentPage: 1,
+    pages: [],
+    totalDocuments: 0,
+    query: ""
   };
-  toggle = () => {
-    // this.setState({ modal: !this.state.modal });
-  };
-  componentDidMount() {
-    axios
-      .get("/api/category")
 
-      .then(response => {
-        this.setState({ categories: response.data });
-      })
-      .catch(error => {
-        console.log(error.response);
-      });
+  componentDidMount() {
+    const { select, currentPage, query } = this.state;
+    this.getTotalDocuments();
+
+    this.getPages();
+
+    this.props.getCategories(select, currentPage, query);
   }
+
+  getTotalDocuments = () => {
+    const { query } = this.state;
+    console.log(query);
+    let newQuery = "";
+    if (query === "") newQuery = "undefined";
+    else newQuery = query;
+
+    axios
+      .get(`/api/category/count/${newQuery}`)
+      .then(response => {
+        this.setState({ totalDocuments: response.data });
+      })
+      .catch(er => {
+        console.log(er.response);
+      });
+  };
+  getPages = () => {
+    const { select, query } = this.state;
+    console.log(query);
+    let newQuery = "";
+    if (query === "") newQuery = "undefined";
+    else newQuery = query;
+
+    axios
+      .get(`/api/category/count/${newQuery}`)
+      .then(response => {
+        let pages = Math.floor(response.data / select);
+        let remainder = response.data % select;
+        let newArray = [];
+        if (remainder !== 0) pages += 1;
+
+        for (let i = 0; i < pages; i++) {
+          newArray.push({ pageNumber: i + 1 });
+        }
+
+        this.setState({ pages: newArray });
+      })
+      .catch(er => {
+        console.log(er.response);
+      });
+  };
+
+  handleOnChange = e => {
+    this.setState({ [e.target.name]: e.target.value }, () => {
+      const { select, currentPage, query } = this.state;
+      this.props.getCategories(select, currentPage, query);
+      this.getPages();
+      this.getTotalDocuments();
+    });
+  };
 
   renderCategories = () => {
     const { categories } = this.state;
@@ -35,8 +91,42 @@ export default class Category extends Component {
       );
     });
   };
+  handleChoosePage = e => {
+    this.setState({ currentPage: e }, () => {
+      const { select, currentPage, query } = this.state;
+      this.props.getCategories(select, currentPage, query);
+    });
+  };
+
+  renderPageButtons = () => {
+    const { pages, currentPage } = this.state;
+
+    return pages.map(eachButton => (
+      <li
+        key={eachButton.pageNumber}
+        className={
+          currentPage === eachButton.pageNumber
+            ? "paginae_button active"
+            : "paginate_button "
+        }
+      >
+        <a
+          name="currentPage"
+          onClick={() => this.handleChoosePage(eachButton.pageNumber)}
+          aria-controls="example1"
+          data-dt-idx={eachButton.pageNumber}
+          tabIndex={0}
+        >
+          {eachButton.pageNumber}
+        </a>
+      </li>
+    ));
+  };
 
   render() {
+    const { categories, loading } = this.props.category;
+    const { select, totalDocuments, pages } = this.state;
+
     return (
       <React.Fragment>
         {/* Content Header (Page header) */}
@@ -68,7 +158,7 @@ export default class Category extends Component {
                   </div>
 
                   <div className="col-md-4">
-                    <CategoryModal toggle={this.toggle} />
+                    <CategoryModal />
                   </div>
                 </div>
                 {/* /.box-header */}
@@ -87,15 +177,21 @@ export default class Category extends Component {
                             <label>
                               Show
                               <select
-                                name="example1_length"
+                                onChange={this.handleOnChange}
+                                name="select"
                                 aria-controls="example1"
                                 style={{ margin: "0px 5px" }}
                                 className="form-control input-sm"
+                                value={this.state.select}
                               >
-                                <option value={10}>10</option>
-                                <option value={25}>25</option>
-                                <option value={50}>50</option>
-                                <option value={100}>100</option>
+                                {this.state.sort.map(option => (
+                                  <option
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.value}
+                                  </option>
+                                ))}
                               </select>
                               entries
                             </label>
@@ -110,10 +206,13 @@ export default class Category extends Component {
                               Search:
                               <input
                                 type="search"
+                                name="query"
                                 style={{ margin: "0px 5px" }}
                                 className="form-control input-sm"
                                 placeholder="Find me  "
                                 aria-controls="example1"
+                                onChange={this.handleOnChange}
+                                value={this.state.query}
                               />
                             </label>
                           </div>
@@ -129,26 +228,30 @@ export default class Category extends Component {
                         >
                           <thead>
                             <tr>
-                              <th style={{ width: "30%" }}>ID</th>
+                              <th style={{ width: "10%" }}>#</th>
                               <th style={{ width: "20%" }}>Category</th>
                               <th style={{ width: "20%" }}>Created date</th>
+                              <th style={{ width: "20%" }}>Creator</th>
                               <th style={{ width: "30%" }}>Action</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {this.state.categories.map(eachCategory => (
+                            {categories.map((eachCategory, index) => (
                               <CategoryRow
                                 history={this.props.history}
                                 key={eachCategory._id}
                                 Category={eachCategory}
+                                index={index}
+                                // deleteCategory={this.props.deleteCategory}
                               />
                             ))}
                           </tbody>
                           <tfoot>
                             <tr>
-                              <th>ID</th>
+                              <th>#</th>
                               <th>Category</th>
                               <th>Created date</th>
+                              <th>Creator</th>
                               <th>Action</th>
                             </tr>
                           </tfoot>
@@ -163,7 +266,7 @@ export default class Category extends Component {
                           role="status"
                           aria-live="polite"
                         >
-                          Showing 1 to 8 of 8 entries
+                          Showing 1 to {select} of {totalDocuments} entries
                         </div>
                       </div>
                       <div className="col-sm-7">
@@ -185,24 +288,15 @@ export default class Category extends Component {
                                 Previous
                               </a>
                             </li>
-                            <li className="paginate_button active">
-                              <a
-                                href="fake_url"
-                                aria-controls="example1"
-                                data-dt-idx={1}
-                                tabIndex={0}
-                              >
-                                1
-                              </a>
-                            </li>
+                            {this.renderPageButtons()}
                             <li
                               className="paginate_button next disabled"
                               id="example1_next"
                             >
                               <a
                                 href="fake_url"
-                                aria-controls="example1"
-                                data-dt-idx={2}
+                                aria-controls="example2"
+                                data-dt-idx={this.state.pages.length + 1}
                                 tabIndex={0}
                               >
                                 Next
@@ -218,7 +312,6 @@ export default class Category extends Component {
                 {/* /.row */}
               </div>
             </div>
-            >
           </div>
         </section>
         {/* /.content */}
@@ -226,3 +319,17 @@ export default class Category extends Component {
     );
   }
 }
+
+Category.propTypes = {
+  getCategories: PropTypes.func.isRequired,
+  category: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  category: state.category
+});
+
+export default connect(
+  mapStateToProps,
+  { getCategories, deleteCategory }
+)(Category);

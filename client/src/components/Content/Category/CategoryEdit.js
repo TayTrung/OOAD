@@ -49,6 +49,7 @@ class CategoryEdit extends Component {
   };
   render() {
     const { name, _id } = this.state;
+
     return (
       <Fragment>
         {/* Content Header (Page header) */}
@@ -97,7 +98,7 @@ class CategoryEdit extends Component {
                           id="inputEmail3"
                           placeholder="Loaiding..."
                           className="form-control"
-                          value={_id}
+                          defaultValue={_id}
                           disabled
                           onChange={this.handleChange}
                         />
@@ -117,7 +118,7 @@ class CategoryEdit extends Component {
                           className="form-control"
                           id="inputName"
                           placeholder="Loaiding..."
-                          value={name}
+                          defaultValue={name}
                           onChange={this.handleChange}
                         />
                       </div>

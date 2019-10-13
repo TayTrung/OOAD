@@ -1,15 +1,13 @@
 import React, { Component } from "react";
-import axios from "axios";
 
-class ItemModal extends Component {
+import { connect } from "react-redux";
+import { addCategory } from "../../../actions/categoryActions";
+
+class CategoryModal extends Component {
   state = {
     name: ""
   };
-  handleOnClick = e => {
-    console.log("toggle from modal");
 
-    this.props.toggle();
-  };
   onChange = e => {
     console.log(e.target.value);
 
@@ -20,26 +18,22 @@ class ItemModal extends Component {
     e.preventDefault();
 
     const newItem = {
-      name: this.state.name
+      name: this.state.name,
+      createAt: Date.now()
     };
-    axios
-      .post("/api/category/", newItem)
-
-      .then(response => {
-        console.log(response);
-      })
-      .catch(error => {
-        console.log(error.response);
-      });
+    this.props.addCategory(newItem);
 
     // Close modal
     document.getElementById("triggerButton").click();
 
     //Toggle
 
-    this.props.toggle();
+    // this.props.toggle();
   };
-
+  handleOnClick = () => {
+    // window.location.replace("/category?page=0&id=2");
+    // window.history.pushState("haha", null, "/category/edit");
+  };
   render() {
     return (
       <React.Fragment>
@@ -103,7 +97,6 @@ class ItemModal extends Component {
                   type="button"
                   className="btn btn-secondary"
                   data-dismiss="modal"
-                  onClick={this.handleOnClick}
                 >
                   Close
                 </button>
@@ -122,5 +115,10 @@ class ItemModal extends Component {
     );
   }
 }
-
-export default ItemModal;
+const mapStateToProps = state => ({
+  category: state.category
+});
+export default connect(
+  mapStateToProps,
+  { addCategory }
+)(CategoryModal);

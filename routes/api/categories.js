@@ -35,10 +35,33 @@ router.put("/:id", (req, res) => {
 //@route GET /category     (dùng phương thức GET và route là /category)
 //@desc  Get All categories  (miểu tả APi làm gì)
 //@access Public             (access hiện tại là public vì Trung chưa tạo authentication)
-router.get("/", (req, res) => {
-  Category.find()
-    .sort({ date: -1 }) //desc = -1 acs = 1
+router.get("/:objects/:page/:query", (req, res) => {
+  const { objects, page, query } = req.params;
+  let newQuery = "";
+  if (query === "undefined") newQuery = "";
+  else newQuery = query;
+
+  Category.find({ name: { $regex: newQuery, $options: "i" } })
+    .limit(Number(objects))
+    .skip(objects * (page - 1))
+    .sort({ createAt: -1 }) //desc = -1 acs = 1
     .then(category => res.json(category)) //return lại item
+    .catch(err => res.json(err)); //Catch lỗi rồi return ra;
+});
+
+//@route GET /category     (dùng phương thức GET và route là /category)
+//@desc  Get All categories  (miểu tả APi làm gì)
+//@access Public             (access hiện tại là public vì Trung chưa tạo authentication)
+router.get("/count/:query", (req, res) => {
+  const { query } = req.params;
+  let newQuery = "";
+  if (query === "undefined") newQuery = "";
+  else newQuery = query;
+
+  Category.find({ name: { $regex: newQuery, $options: "i" } })
+    .countDocuments()
+    .sort({ createAt: -1 }) //desc = -1 acs = 1
+    .then(counter => res.json(counter)) //return lại item
     .catch(err => res.json(err)); //Catch lỗi rồi return ra;
 });
 

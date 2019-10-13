@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import axios from "axios";
+
+import { connect } from "react-redux";
+import { deleteCategory } from "../../../actions/categoryActions";
 
 class CategoryRow extends Component {
   convertDate = date => {
@@ -21,25 +23,19 @@ class CategoryRow extends Component {
     this.props.history.push(`/category/edit/${id}`);
   };
   handleDelete = id => {
-    console.log(id);
+    // console.log(id);
 
-    axios
-      .delete(`/api/category/${id}`)
-      .then(response => {
-        console.log(response);
-      })
-      .catch(error => {
-        console.log(error.response);
-      });
+    this.props.deleteCategory(id);
   };
   render() {
-    const { Category } = this.props;
+    const { Category, index } = this.props;
 
     return (
       <tr>
-        <td>{Category._id}</td>
+        <td>{index + 1}</td>
         <td>{Category.name}</td>
         <td>{this.convertDate(Category.createAt)}</td>
+        <td>Uknown</td>
         <td>
           <div className="btn-group">
             <button
@@ -63,4 +59,11 @@ class CategoryRow extends Component {
     );
   }
 }
-export default CategoryRow;
+
+const mapStateToProps = state => ({
+  category: state.category
+});
+export default connect(
+  mapStateToProps,
+  { deleteCategory }
+)(CategoryRow);

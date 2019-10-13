@@ -2,9 +2,12 @@ import React, { Component } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Menu from "./components/Menu";
-import Category from "./components/Content/Category";
-import CategoryEdit from "./components/Content/CategoryEdit";
-import ErrorPage from "./components/Content/ErrorPage";
+import Category from "./components/Content/Category/Category";
+import CategoryEdit from "./components/Content/Category/CategoryEdit";
+import ErrorPage from "./components/Content/ErrorPage/ErrorPage";
+
+import { Provider } from "react-redux";
+import store from "./store";
 
 import { Route } from "react-router-dom";
 
@@ -25,7 +28,7 @@ export default class App extends Component {
   };
   render() {
     return (
-      <React.Fragment>
+      <Provider store={store}>
         <Header />
         <Menu />
         {/* Thay đổi content ở bên trong này
@@ -46,7 +49,7 @@ export default class App extends Component {
         </div>
         {/* Thay đổi content ở bên trong này */}
         <Footer />
-      </React.Fragment>
+      </Provider>
     );
   }
 }
