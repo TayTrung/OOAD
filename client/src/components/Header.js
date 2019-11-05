@@ -1,6 +1,24 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { logout } from "../actions/authActions";
+import { pushHistory } from "../actions/historyActions";
 
-export default class Header extends Component {
+import PropTypes from "prop-types";
+class Header extends Component {
+  componentDidMount() {
+    document.body.className = "hold-transition skin-blue sidebar-mini";
+  }
+
+  static propTypes = {
+    logout: PropTypes.func.isRequired,
+    pushHistory: PropTypes.func.isRequired
+  };
+
+  handleLogout = e => {
+    e.preventDefault();
+    this.props.logout();
+    this.props.pushHistory("/login");
+  };
   render() {
     return (
       <div>
@@ -319,7 +337,7 @@ export default class Header extends Component {
                       className="user-image"
                       alt="User"
                     />
-                    <span className="hidden-xs">Alexander Pierce</span>
+                    <span className="hidden-xs">Alexaander Pierce</span>
                   </a>
                   <ul className="dropdown-menu">
                     {/* User image */}
@@ -357,9 +375,12 @@ export default class Header extends Component {
                         </a>
                       </div>
                       <div className="pull-right">
-                        <a href="fake_url" className="btn btn-default btn-flat">
+                        <button
+                          onClick={this.handleLogout}
+                          className="btn btn-default btn-flat"
+                        >
                           Sign out
-                        </a>
+                        </button>
                       </div>
                     </li>
                   </ul>
@@ -378,3 +399,11 @@ export default class Header extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  history: state.history
+});
+export default connect(
+  mapStateToProps,
+  { logout, pushHistory }
+)(Header);

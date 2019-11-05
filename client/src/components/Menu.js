@@ -360,25 +360,6 @@ export default class Menu extends Component {
                   <i className="fa fa-book" /> <span>Documentation</span>
                 </a>
               </li>
-              <li className="header">LABELS</li>
-              <li>
-                <a href="fake_url">
-                  <i className="fa fa-circle-o text-red" />{" "}
-                  <span>Important</span>
-                </a>
-              </li>
-              <li>
-                <a href="fake_url">
-                  <i className="fa fa-circle-o text-yellow" />{" "}
-                  <span>Warning</span>
-                </a>
-              </li>
-              <li>
-                <a href="fake_url">
-                  <i className="fa fa-circle-o text-aqua" />{" "}
-                  <span>Information</span>
-                </a>
-              </li>
             </ul>
           </section>
           {/* /.sidebar */}

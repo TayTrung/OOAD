@@ -2,7 +2,6 @@ import {
   GET_CATEGORIES,
   ADD_CATEGORY,
   DELETE_CATEGORY,
-  GET_CATEGORY,
   CATEGORIES_LOADING
 } from "../actions/types";
 
