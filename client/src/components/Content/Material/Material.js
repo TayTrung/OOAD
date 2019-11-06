@@ -1,15 +1,12 @@
 import React, { Component } from "react";
-import CategoryModal from "./CategoryModal";
-import CategoryRow from "./CategoryRow";
+import MaterialModal from "./MaterialModal";
+import MaterialRow from "./MaterialRow";
 import { connect } from "react-redux";
-import {
-  getCategories,
-  deleteCategory
-} from "../../../actions/categoryActions";
+import { getMaterials, deleteMaterial } from "../../../actions/materialActions";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-class Category extends Component {
+class Material extends Component {
   state = {
     sort: [{ value: "10" }, { value: "20" }, { value: "30" }],
     select: "10",
@@ -25,7 +22,7 @@ class Category extends Component {
 
     this.getPages();
 
-    this.props.getCategories(select, currentPage, query);
+    this.props.getMaterials(select, currentPage, query);
   }
 
   getTotalDocuments = () => {
@@ -36,7 +33,7 @@ class Category extends Component {
     else newQuery = query;
 
     axios
-      .get(`/api/category/count/${newQuery}`)
+      .get(`/api/material/count/${newQuery}`)
       .then(response => {
         this.setState({ totalDocuments: response.data });
       })
@@ -52,7 +49,7 @@ class Category extends Component {
     else newQuery = query;
 
     axios
-      .get(`/api/category/count/${newQuery}`)
+      .get(`/api/material/count/${newQuery}`)
       .then(response => {
         let pages = Math.floor(response.data / select);
         let remainder = response.data % select;
@@ -71,30 +68,34 @@ class Category extends Component {
   };
 
   handleOnChange = e => {
-    this.setState({ [e.target.name]: e.target.value }, () => {
-      const { select, currentPage, query } = this.state;
-      this.props.getCategories(select, currentPage, query);
-      this.getPages();
-      this.getTotalDocuments();
-    });
+    this.setState(
+      { [e.target.name]: e.target.value, [e.target.quantity]: e.target.value },
+      () => {
+        const { select, currentPage, query } = this.state;
+        this.props.getMaterials(select, currentPage, query);
+        this.getPages();
+        this.getTotalDocuments();
+      }
+    );
   };
 
-  renderCategories = () => {
-    const { categories } = this.state;
-    categories.map(eachCategory => {
+  renderMaterials = () => {
+    const { materials } = this.state;
+    materials.map(eachMaterial => {
       return (
-        <CategoryRow
+        <MaterialRow
           history={this.props.history}
-          key={eachCategory._id}
-          Category={eachCategory}
+          key={eachMaterial._id}
+          Material={eachMaterial}
         />
       );
     });
   };
+
   handleChoosePage = e => {
     this.setState({ currentPage: e }, () => {
       const { select, currentPage, query } = this.state;
-      this.props.getCategories(select, currentPage, query);
+      this.props.getMaterials(select, currentPage, query);
     });
   };
 
@@ -124,7 +125,7 @@ class Category extends Component {
   };
 
   render() {
-    const { categories, loading } = this.props.category;
+    const { materials } = this.props.material;
     const { select, totalDocuments, pages } = this.state;
 
     return (
@@ -132,7 +133,7 @@ class Category extends Component {
         {/* Content Header (Page header) */}
         <section className="content-header">
           <h1>
-            Category
+            Material
             {/* <small>Preview</small> */}
           </h1>
           <ol className="breadcrumb">
@@ -142,7 +143,7 @@ class Category extends Component {
               </a>
             </li>
             <li>
-              <a href="fake_url">Category</a>
+              <a href="fake_url">Material</a>
             </li>
           </ol>
         </section>
@@ -154,11 +155,11 @@ class Category extends Component {
               <div className="box">
                 <div className="box-header" style={{ marginTop: "5px" }}>
                   <div style={{ paddingLeft: "5px" }} className="col-md-8">
-                    <h3 className="box-title">Data Table With Full Features</h3>
+                    <h3 className="box-title">Materials Table</h3>
                   </div>
 
                   <div className="col-md-4">
-                    <CategoryModal />
+                    <MaterialModal />
                   </div>
                 </div>
                 {/* /.box-header */}
@@ -229,18 +230,18 @@ class Category extends Component {
                           <thead>
                             <tr>
                               <th style={{ width: "10%" }}>#</th>
-                              <th style={{ width: "20%" }}>Category</th>
+                              <th style={{ width: "20%" }}>Material</th>
                               <th style={{ width: "20%" }}>Created date</th>
-                              <th style={{ width: "20%" }}>Creator</th>
+                              <th style={{ width: "20%" }}>Quantity</th>
                               <th style={{ width: "30%" }}>Action</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {categories.map((eachCategory, index) => (
-                              <CategoryRow
+                            {materials.map((eachMaterial, index) => (
+                              <MaterialRow
                                 history={this.props.history}
-                                key={eachCategory._id}
-                                Category={eachCategory}
+                                //key={eachMaterial._id}
+                                Material={eachMaterial}
                                 index={index}
                                 // deleteCategory={this.props.deleteCategory}
                               />
@@ -249,9 +250,9 @@ class Category extends Component {
                           <tfoot>
                             <tr>
                               <th>#</th>
-                              <th>Category</th>
+                              <th>Material</th>
                               <th>Created date</th>
-                              <th>Creator</th>
+                              <th>Quantity</th>
                               <th>Action</th>
                             </tr>
                           </tfoot>
@@ -266,7 +267,9 @@ class Category extends Component {
                           role="status"
                           aria-live="polite"
                         >
-                          Showing 1 to {select} of {totalDocuments} entries
+                          Showing 1 to{" "}
+                          {totalDocuments < select ? totalDocuments : select} of{" "}
+                          {totalDocuments} entries
                         </div>
                       </div>
                       <div className="col-sm-7">
@@ -320,16 +323,17 @@ class Category extends Component {
   }
 }
 
-Category.propTypes = {
-  getCategories: PropTypes.func.isRequired,
-  category: PropTypes.object.isRequired
+Material.propTypes = {
+  getMaterials: PropTypes.func.isRequired,
+  material: PropTypes.object.isRequired,
+  deleteMaterial: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  category: state.category
+  material: state.material
 });
 
 export default connect(
   mapStateToProps,
-  { getCategories, deleteCategory }
-)(Category);
+  { getMaterials, deleteMaterial }
+)(Material);

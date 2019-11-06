@@ -2,9 +2,14 @@ import React, { Component } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Menu from "./components/Menu";
+
+import ErrorPage from "./components/Content/ErrorPage/ErrorPage";
+
 import Category from "./components/Content/Category/Category";
 import CategoryEdit from "./components/Content/Category/CategoryEdit";
-import ErrorPage from "./components/Content/ErrorPage/ErrorPage";
+
+import Material from "./components/Content/Material/Material";
+import MaterialEdit from "./components/Content/Material/MaterialEdit";
 
 import { Provider } from "react-redux";
 import store from "./store";
@@ -15,6 +20,7 @@ export default class App extends Component {
   state = {
     modal: false,
     name: ""
+    //quantity: 0
   };
 
   toggle = () => {
@@ -25,6 +31,7 @@ export default class App extends Component {
 
   onChange = e => {
     this.setState({ [e.target.name]: e.target.value });
+    //this.setState({ [e.target.quantity]: e.target.value });
   };
   render() {
     return (
@@ -36,12 +43,22 @@ export default class App extends Component {
         <div>
           {/* Content Wrapper. Contains page content */}
           <div className="content-wrapper">
+            {/*Category*/}
             <Route exact path="/category" component={Category}></Route>
             <Route
               exact
               path="/category/edit/:id"
               component={CategoryEdit}
             ></Route>
+
+            {/*Material*/}
+            <Route exact path="/material" component={Material}></Route>
+            <Route
+              exact
+              path="/material/edit/:id"
+              component={MaterialEdit}
+            ></Route>
+
             <Route exact path="/404" component={ErrorPage}></Route>
             {/* <Redirect to="/404"></Redirect> */}
           </div>
