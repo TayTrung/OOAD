@@ -52,32 +52,32 @@ class CoffeShop extends Component {
               );
             }}
           />
-          <Loader>
-            {this.props.isAuthenticated && (
-              <Fragment>
-                <Header />
-                <Menu />
+          {/* <Loader> */}
+          {this.props.isAuthenticated && (
+            <Fragment>
+              <Header />
+              <Menu />
 
-                <div className="content-wrapper">
-                  <Route exact path="/">
-                    <Home />
-                  </Route>
-                  <Route path="/404">
-                    <ErrorPage />
-                  </Route>
-                  <Route exact path="/category">
-                    <Category />
-                  </Route>
+              <div className="content-wrapper">
+                <Route exact path="/">
+                  <Home />
+                </Route>
+                <Route path="/404">
+                  <ErrorPage />
+                </Route>
+                <Route exact path="/category">
+                  <Category />
+                </Route>
 
-                  <Route
-                    path="/category/edit/:id"
-                    component={CategoryEdit}
-                  ></Route>
-                </div>
-                <Footer />
-              </Fragment>
-            )}
-          </Loader>
+                <Route
+                  path="/category/edit/:id"
+                  component={CategoryEdit}
+                ></Route>
+              </div>
+              <Footer />
+            </Fragment>
+          )}
+          {/* </Loader> */}
           <Route
             path="*"
             render={() => {
