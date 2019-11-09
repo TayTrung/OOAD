@@ -96,7 +96,7 @@ class CategoryEdit extends Component {
                           name="_id"
                           type="text"
                           id="inputEmail3"
-                          placeholder="Loaiding..."
+                          placeholder="Loading..."
                           className="form-control"
                           defaultValue={_id}
                           disabled

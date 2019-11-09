@@ -11,14 +11,17 @@ import axios from "axios";
 
 class Category extends Component {
   state = {
-    sort: [{ value: "1" }, { value: "2" }, { value: "3" }],
-    select: "2",
+    sort: [{ value: "5" }, { value: "10" }, { value: "20" }],
+    select: "5",
     currentPage: 1,
     pages: [],
     totalDocuments: 0,
     query: ""
   };
 
+  resetState = () => {
+    this.setState({ select: "5", currentPage: 1, query: "" })
+  }
   componentDidMount() {
     const { select, currentPage, query } = this.state;
     this.getTotalDocuments();
@@ -39,11 +42,13 @@ class Category extends Component {
       .get(`/api/category/count/${newQuery}`)
       .then(response => {
         this.setState({ totalDocuments: response.data });
+        console.log(response.data);
       })
       .catch(er => {
         console.log(er.response);
       });
   };
+
   getPages = () => {
     const { select, query } = this.state;
     console.log(query);
@@ -79,18 +84,17 @@ class Category extends Component {
     });
   };
 
-  renderCategories = () => {
-    const { categories } = this.state;
-    categories.map(eachCategory => {
-      return (
-        <CategoryRow
-          history={this.props.history}
-          key={eachCategory._id}
-          Category={eachCategory}
-        />
-      );
-    });
-  };
+  // renderCategories = () => {
+  //   const { categories } = this.state;
+  //   categories.map(eachCategory => {
+  //     return (
+  //       <CategoryRow
+  //         key={eachCategory._id}
+  //         Category={eachCategory}
+  //       />
+  //     );
+  //   });
+  // };
   handleChoosePage = e => {
     this.setState({ currentPage: e }, () => {
       const { select, currentPage, query } = this.state;
@@ -126,7 +130,6 @@ class Category extends Component {
   render() {
     const { categories, loading } = this.props.category;
     const { select, totalDocuments, pages } = this.state;
-
     return (
       <React.Fragment>
         {/* Content Header (Page header) */}
@@ -238,12 +241,15 @@ class Category extends Component {
                           <tbody>
                             {categories.map((eachCategory, index) => (
                               <CategoryRow
+                                onHandler={this.handler}
+                                resetState={this.resetState}
                                 history={this.props.history}
                                 key={eachCategory._id}
                                 Category={eachCategory}
                                 index={index}
-                                // deleteCategory={this.props.deleteCategory}
+                              // deleteCategory={this.props.deleteCategory}
                               />
+
                             ))}
                           </tbody>
                           <tfoot>

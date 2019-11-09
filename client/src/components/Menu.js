@@ -109,6 +109,30 @@ export default class Menu extends Component {
                   </span>
                 </Link>
               </li>
+              <li>
+                <Link to="/member">
+                  <i className="fa fa-th" /> <span>Member</span>
+                  <span className="pull-right-container">
+                    <small className="label pull-right bg-green">new</small>
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/orderScreen">
+                  <i className="fa fa-th" /> <span>Order</span>
+                  <span className="pull-right-container">
+                    <small className="label pull-right bg-green">new</small>
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/invoice">
+                  <i className="fa fa-th" /> <span>Invoice</span>
+                  <span className="pull-right-container">
+                    <small className="label pull-right bg-green">new</small>
+                  </span>
+                </Link>
+              </li>
               <li className="treeview">
                 <a href="fake_url">
                   <i className="fa fa-pie-chart" />

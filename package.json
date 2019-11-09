@@ -13,10 +13,18 @@
   "author": "Tay Trung",
   "license": "ISC",
   "dependencies": {
+    "@mobiscroll/react": "https://npm.mobiscroll.com/@mobiscroll/react-trial/-/react-trial-4.8.4.tgz",
     "body-parser": "^1.19.0",
     "concurrently": "^4.1.2",
     "express": "^4.17.1",
-    "mongoose": "^5.7.1"
+    "mobiscroll": "^3.0.0-beta6",
+    "mongoose": "^5.7.1",
+    "rc-swipeout": "^2.0.11",
+    "react-native-swipeout": "^2.3.6",
+    "react-select": "^3.0.8",
+    "react-swipe-to-delete-component": "^0.5.4",
+    "react-widgets": "^4.4.11",
+    "sudo": "^1.0.3"
   },
   "devDependencies": {
     "nodemon": "^1.19.3"

@@ -4,6 +4,11 @@ import Footer from "./components/Footer";
 import Menu from "./components/Menu";
 import Category from "./components/Content/Category/Category";
 import CategoryEdit from "./components/Content/Category/CategoryEdit";
+import Member from "./components/Content/Member/Member";
+import OrderScreen from "./components/Content/OrderAndInvoices/OrderScreen";
+import Invoice from "./components/Content/OrderAndInvoices/Invoice";
+import InvoiceEdit from "./components/Content/OrderAndInvoices/InvoiceEdit";
+import MemberEdit from "./components/Content/Member/MemberEdit";
 import ErrorPage from "./components/Content/ErrorPage/ErrorPage";
 
 import { Provider } from "react-redux";
@@ -26,13 +31,14 @@ export default class App extends Component {
   onChange = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
+
   render() {
     return (
       <Provider store={store}>
         <Header />
         <Menu />
         {/* Thay đổi content ở bên trong này
-            Thêm route vào để thay đổi content */}
+          Thêm route vào để thay đổi content */}
         <div>
           {/* Content Wrapper. Contains page content */}
           <div className="content-wrapper">
@@ -40,14 +46,24 @@ export default class App extends Component {
             <Route
               exact
               path="/category/edit/:id"
-              component={CategoryEdit}
-            ></Route>
+              component={CategoryEdit}>
+            </Route>
+            <Route exact path="/member" component={Member}></Route>
+            <Route
+              exact
+              path="/member/edit/:id"
+              component={MemberEdit}>
+            </Route>
+            <Route exact path="/orderScreen" component={OrderScreen}></Route>
+            <Route exact path="/invoice" component={Invoice}></Route>
+            <Route
+              exact
+              path="/invoice/edit/:id"
+              component={InvoiceEdit}>
+            </Route>
             <Route exact path="/404" component={ErrorPage}></Route>
-            {/* <Redirect to="/404"></Redirect> */}
           </div>
-          {/* /.content-wrapper */}
         </div>
-        {/* Thay đổi content ở bên trong này */}
         <Footer />
       </Provider>
     );

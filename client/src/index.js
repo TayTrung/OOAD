@@ -13,9 +13,7 @@ const routes = (
     <Switch>
       <Route path="/" component={App} />
     </Switch>
-  </Router>
-);
-
+  </Router>);
 ReactDOM.render(routes, document.getElementById("root"));
 
 // If you want your app to work offline and load faster, you can change
