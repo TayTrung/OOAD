@@ -2,19 +2,20 @@ import {
   GET_CATEGORIES,
   ADD_CATEGORY,
   DELETE_CATEGORY,
-  GET_CATEGORY,
   CATEGORIES_LOADING
 } from "./types";
 import axios from "axios";
-import { log } from "util";
-
-export const getCategories = (show = 5, page = 1, query) => dispatch => {
+import { tokenConfig } from "./authActions";
+export const getCategories = (show = 5, page = 1, query) => (
+  dispatch,
+  getState
+) => {
   // dispatch(setCategoriesLoading());
   let newQuery = "";
   if (query === "") newQuery = "undefined";
   else newQuery = query;
   axios
-    .get(`/api/category/${show}/${page}/${newQuery}`)
+    .get(`/api/category/${show}/${page}/${newQuery}`, tokenConfig(getState))
 
     .then(response =>
       dispatch({ type: GET_CATEGORIES, payload: response.data })
@@ -31,13 +32,15 @@ export const deleteCategory = id => dispatch => {
   });
 };
 
-export const addCategory = newCategory => dispatch => {
-  axios.post("/api/category/", newCategory).then(response => {
-    dispatch({
-      type: ADD_CATEGORY,
-      payload: newCategory
+export const addCategory = newCategory => (dispatch, getState) => {
+  axios
+    .post("/api/category/", newCategory, tokenConfig(getState))
+    .then(response => {
+      dispatch({
+        type: ADD_CATEGORY,
+        payload: newCategory
+      });
     });
-  });
 };
 
 export const setCategoriesLoading = () => {

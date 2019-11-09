@@ -1,5 +1,8 @@
 import React, { Fragment, Component } from "react";
 import axios from "axios";
+import { connect } from "react-redux";
+import { deleteCategory } from "../../../actions/categoryActions";
+import { pushHistory } from "../../../actions/historyActions";
 
 class CategoryEdit extends Component {
   state = {
@@ -8,10 +11,11 @@ class CategoryEdit extends Component {
   };
   componentDidMount() {
     const { id } = this.props.match.params;
+
     axios
       .get(`/api/category/${id}`)
       .then(response => {
-        if (response.data === null) this.props.history.push("/404");
+        if (response.data === null) this.props.pushHistory("/404");
         else
           this.setState({ name: response.data.name, _id: response.data._id });
       })
@@ -147,5 +151,10 @@ class CategoryEdit extends Component {
     );
   }
 }
-
-export default CategoryEdit;
+const mapStateToProps = state => ({
+  history: state.history.history
+});
+export default connect(
+  mapStateToProps,
+  { deleteCategory, pushHistory }
+)(CategoryEdit);

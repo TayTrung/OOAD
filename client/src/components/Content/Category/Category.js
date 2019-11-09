@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import CategoryModal from "./CategoryModal";
 import CategoryRow from "./CategoryRow";
 import { connect } from "react-redux";
-import {
-  getCategories,
-  deleteCategory
-} from "../../../actions/categoryActions";
+import { getCategories } from "../../../actions/categoryActions";
 import PropTypes from "prop-types";
 import axios from "axios";
+
+const mapStateToProps = state => ({
+  category: state.category
+});
 
 class Category extends Component {
   state = {
@@ -30,7 +31,7 @@ class Category extends Component {
 
   getTotalDocuments = () => {
     const { query } = this.state;
-    console.log(query);
+
     let newQuery = "";
     if (query === "") newQuery = "undefined";
     else newQuery = query;
@@ -46,7 +47,6 @@ class Category extends Component {
   };
   getPages = () => {
     const { select, query } = this.state;
-    console.log(query);
     let newQuery = "";
     if (query === "") newQuery = "undefined";
     else newQuery = query;
@@ -71,31 +71,63 @@ class Category extends Component {
   };
 
   handleOnChange = e => {
+    console.log(typeof e.target.name + " " + e.target.name);
+    e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
-      const { select, currentPage, query } = this.state;
-      this.props.getCategories(select, currentPage, query);
-      this.getPages();
-      this.getTotalDocuments();
+      if (e.target.name === "query") {
+        this.setState({ currentPage: 1 }, () => {
+          this.rerenderPage();
+        });
+      } else {
+        this.rerenderPage();
+      }
     });
   };
 
+  rerenderPage = () => {
+    const { select, currentPage, query } = this.state;
+    this.props.getCategories(select, currentPage, query);
+    this.getPages();
+    this.getTotalDocuments();
+  };
+
   renderCategories = () => {
-    const { categories } = this.state;
-    categories.map(eachCategory => {
-      return (
-        <CategoryRow
-          history={this.props.history}
-          key={eachCategory._id}
-          Category={eachCategory}
-        />
-      );
-    });
+    const { categories } = this.props.category;
+    return categories.map((eachCategory, index) => (
+      <CategoryRow
+        history={this.props.history}
+        key={eachCategory._id}
+        category={eachCategory}
+        index={index}
+        // deleteCategory={this.props.deleteCategory}
+      />
+    ));
   };
   handleChoosePage = e => {
     this.setState({ currentPage: e }, () => {
       const { select, currentPage, query } = this.state;
       this.props.getCategories(select, currentPage, query);
     });
+  };
+
+  renderSelect = () => {
+    const { sort, select } = this.state;
+    return (
+      <select
+        onChange={this.handleOnChange}
+        name="select"
+        aria-controls="example1"
+        style={{ margin: "0px 5px" }}
+        className="form-control input-sm"
+        value={select}
+      >
+        {sort.map(option => (
+          <option key={option.value} value={option.value}>
+            {option.value}
+          </option>
+        ))}
+      </select>
+    );
   };
 
   renderPageButtons = () => {
@@ -111,11 +143,10 @@ class Category extends Component {
         }
       >
         <a
+          className="paga-link"
           name="currentPage"
+          href
           onClick={() => this.handleChoosePage(eachButton.pageNumber)}
-          aria-controls="example1"
-          data-dt-idx={eachButton.pageNumber}
-          tabIndex={0}
         >
           {eachButton.pageNumber}
         </a>
@@ -124,8 +155,7 @@ class Category extends Component {
   };
 
   render() {
-    const { categories, loading } = this.props.category;
-    const { select, totalDocuments, pages } = this.state;
+    const { select, totalDocuments } = this.state;
 
     return (
       <React.Fragment>
@@ -176,23 +206,7 @@ class Category extends Component {
                           >
                             <label>
                               Show
-                              <select
-                                onChange={this.handleOnChange}
-                                name="select"
-                                aria-controls="example1"
-                                style={{ margin: "0px 5px" }}
-                                className="form-control input-sm"
-                                value={this.state.select}
-                              >
-                                {this.state.sort.map(option => (
-                                  <option
-                                    key={option.value}
-                                    value={option.value}
-                                  >
-                                    {option.value}
-                                  </option>
-                                ))}
-                              </select>
+                              {this.renderSelect()}
                               entries
                             </label>
                           </div>
@@ -235,17 +249,7 @@ class Category extends Component {
                               <th style={{ width: "30%" }}>Action</th>
                             </tr>
                           </thead>
-                          <tbody>
-                            {categories.map((eachCategory, index) => (
-                              <CategoryRow
-                                history={this.props.history}
-                                key={eachCategory._id}
-                                Category={eachCategory}
-                                index={index}
-                                // deleteCategory={this.props.deleteCategory}
-                              />
-                            ))}
-                          </tbody>
+                          <tbody>{this.renderCategories()}</tbody>
                           <tfoot>
                             <tr>
                               <th>#</th>
@@ -275,33 +279,7 @@ class Category extends Component {
                           id="example1_paginate"
                         >
                           <ul className="pagination" style={{ float: "right" }}>
-                            <li
-                              className="paginate_button previous disabled"
-                              id="example1_previous"
-                            >
-                              <a
-                                href="fake_url"
-                                aria-controls="example1"
-                                data-dt-idx={0}
-                                tabIndex={0}
-                              >
-                                Previous
-                              </a>
-                            </li>
                             {this.renderPageButtons()}
-                            <li
-                              className="paginate_button next disabled"
-                              id="example1_next"
-                            >
-                              <a
-                                href="fake_url"
-                                aria-controls="example2"
-                                data-dt-idx={this.state.pages.length + 1}
-                                tabIndex={0}
-                              >
-                                Next
-                              </a>
-                            </li>
                           </ul>
                         </div>
                       </div>
@@ -325,11 +303,7 @@ Category.propTypes = {
   category: PropTypes.object.isRequired
 };
 
-const mapStateToProps = state => ({
-  category: state.category
-});
-
 export default connect(
   mapStateToProps,
-  { getCategories, deleteCategory }
+  { getCategories }
 )(Category);

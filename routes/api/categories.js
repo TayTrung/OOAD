@@ -1,24 +1,25 @@
 const express = require("express");
 const router = express.Router();
+const auth = require("../../middleware/auth");
 
 //Category Model
 const Category = require("../../models/Category");
 
-//@route GET /category/:id     (dùng phương thức GET và route là /category/:id)
-//@desc  Get category by ID  (miểu tả APi làm gì)
-//@access Public             (access hiện tại là public vì Trung chưa tạo authentication)
-router.get("/:id", (req, res) => {
+//@route GET /category/:id
+//@desc  Get category by ID
+//@access Private
+router.get("/:id", auth, (req, res) => {
   Category.findById(req.params.id)
     .then(category => {
       res.json(category);
-    }) //return lại item
-    .catch(err => res.json(err)); //Catch lỗi rồi return ra;
+    })
+    .catch(err => res.json(err));
 });
 
-//@route PUT /category/:id     (dùng phương thức PUT và route là /category/:id)
-//@desc  Update category by ID  (miểu tả APi làm gì)
-//@access Public             (access hiện tại là public vì Trung chưa tạo authentication)
-router.put("/:id", (req, res) => {
+//@route PUT /category/:id
+//@desc  Update category by ID
+//@access Private
+router.put("/:id", auth, (req, res) => {
   console.log(req.body);
 
   const newCategory = {
@@ -28,14 +29,14 @@ router.put("/:id", (req, res) => {
   Category.findByIdAndUpdate(req.body._id, newCategory, { new: true })
     .then(category => {
       res.json(category);
-    }) //return lại item
-    .catch(err => res.json(err)); //Catch lỗi rồi return ra;
+    })
+    .catch(err => res.json(err));
 });
 
-//@route GET /category     (dùng phương thức GET và route là /category)
-//@desc  Get All categories  (miểu tả APi làm gì)
-//@access Public             (access hiện tại là public vì Trung chưa tạo authentication)
-router.get("/:objects/:page/:query", (req, res) => {
+//@route GET /category
+//@desc  Get All categories
+//@access Private
+router.get("/:objects/:page/:query", auth, (req, res) => {
   const { objects, page, query } = req.params;
   let newQuery = "";
   if (query === "undefined") newQuery = "";
@@ -44,14 +45,14 @@ router.get("/:objects/:page/:query", (req, res) => {
   Category.find({ name: { $regex: newQuery, $options: "i" } })
     .limit(Number(objects))
     .skip(objects * (page - 1))
-    .sort({ createAt: -1 }) //desc = -1 acs = 1
-    .then(category => res.json(category)) //return lại item
-    .catch(err => res.json(err)); //Catch lỗi rồi return ra;
+    .sort({ createAt: -1 })
+    .then(category => res.json(category))
+    .catch(err => res.json(err));
 });
 
-//@route GET /category     (dùng phương thức GET và route là /category)
-//@desc  Get All categories  (miểu tả APi làm gì)
-//@access Public             (access hiện tại là public vì Trung chưa tạo authentication)
+//@route GET /category
+//@desc  Get All categories
+//@access Private
 router.get("/count/:query", (req, res) => {
   const { query } = req.params;
   let newQuery = "";
@@ -60,44 +61,32 @@ router.get("/count/:query", (req, res) => {
 
   Category.find({ name: { $regex: newQuery, $options: "i" } })
     .countDocuments()
-    .sort({ createAt: -1 }) //desc = -1 acs = 1
-    .then(counter => res.json(counter)) //return lại item
-    .catch(err => res.json(err)); //Catch lỗi rồi return ra;
+    .sort({ createAt: -1 })
+    .then(counter => res.json(counter))
+    .catch(err => res.json(err));
 });
 
-//@route POST /category   (dùng phương thức POST và route là /category)
-//@desc  Create a category  (miểu tả APi làm gì)
-//@access Public            (access hiện tại là public vì Trung chưa tạo authentication)
-router.post("/", (req, res) => {
+//@route POST /category
+//@desc  Create a category
+//@access Private
+router.post("/", auth, (req, res) => {
   const newCategory = new Category({
     name: req.body.name
   });
 
   newCategory
     .save()
-    .then(category => res.json(category)) //reutnr lại item đã save đc
-    .catch(err => res.json(err)); //Catch lỗi rồi return ra;
+    .then(category => res.json(category))
+    .catch(err => res.json(err));
 });
 
-//@route DELETE /category/:id (dùng phương thức POST và route là /category/:id)
-//@desc  Delete a category      (miêu tả API làm gì)
-//@access Public                (access hiện tại là public vì Trung chưa tạo authentication)
-router.delete("/:id", (req, res) => {
-  // Có 2 cách:
-  //          + Tìm ra bằng "findById" rồi "remove"
-  //          + Tìm và xóa bằng "findByIdAndDelete"
-  // Cách 2 là best practice
-
-  // ----------------Cách 1------------------
-  //   Item.findById(req.params.id)
-  //     .then(item => item.remove().then(() => res.json({ success: true })))
-  //     .catch(err => res.status(404).json({ success: false }));
-  // ----------------Cách 2------------------
-  console.log(req.params.id);
-
+//@route DELETE /category/:id
+//@desc  Delete a category
+//@access Private
+router.delete("/:id", auth, (req, res) => {
   Category.findByIdAndDelete(req.params.id)
-    .then(item => res.json(item)) //Return lại item đã xóa
-    .catch(err => res.json(err)); //Catch lỗi rồi return ra
+    .then(item => res.json(item))
+    .catch(err => res.json(err));
 });
 
 module.exports = router;
