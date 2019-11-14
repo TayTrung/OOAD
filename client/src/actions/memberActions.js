@@ -1,4 +1,5 @@
 import {
+  GET_SEARCH_MEMBERS,
   GET_MEMBERS,
   ADD_MEMBER,
   DELETE_MEMBER,
@@ -18,6 +19,19 @@ export const getMembers = (show = 5, page = 1, query) => dispatch => {
     .then(response =>
       //console.log(response.data)
       dispatch({ type: GET_MEMBERS, payload: response.data })
+    )
+    .catch(er => console.log(er.response));
+};
+
+export const getSearchMembers = (query) => dispatch => {
+  let newQuery = "";
+  if (query === "") newQuery = "undefined";
+  else newQuery = query;
+  axios
+    .get(`/api/member/search/${newQuery}`)
+
+    .then(response =>
+      dispatch({ type: GET_SEARCH_MEMBERS, payload: response.data })
     )
     .catch(er => console.log(er.response));
 };

@@ -85,19 +85,6 @@ class Member extends Component {
       this.getTotalDocuments();
     });
   };
-
-  // renderCategories = () => {
-  //   const { categories } = this.state;
-  //   categories.map(eachMember => {
-  //     return (
-  //       <MemberRow
-  //         history={this.props.history}
-  //         key={eachMember._id}
-  //         Member={eachMember}
-  //       />
-  //     );
-  //   });
-  // };
   handleChoosePage = e => {
     this.setState({ currentPage: e }, () => {
       const { select, currentPage, query } = this.state;

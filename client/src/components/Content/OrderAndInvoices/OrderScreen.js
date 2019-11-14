@@ -3,11 +3,11 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import axios from "axios";
 import { getInvoices, addInvoice } from "../../../actions/invoiceActions";
+import { getSearchMembers, getMembers } from "../../../actions/memberActions";
 import {
   getProducts,
   deleteProduct
 } from "../../../actions/productActions";
-import { getMembers } from "../../../actions/memberActions";
 import MemberModal from "../Member/MemberModal";
 import mobiscroll from "@mobiscroll/react";
 import Select from 'react-select';
@@ -18,7 +18,6 @@ class OrderScreen extends Component {
     super(props);
   }
   state = {
-    listUser: [],
     listSelectMember: [],
     listSelectUser: [],
     selectedMember: '',
@@ -28,6 +27,7 @@ class OrderScreen extends Component {
     idUser: '',
     comments: '',
     total: 0,
+    inputQty: 0,
 
     sort: [{ value: "5" }, { value: "10" }, { value: "20" }],
     select: "5",
@@ -38,18 +38,15 @@ class OrderScreen extends Component {
   };
 
   handleOnSearchChange = e => {
-    this.setState({ [e.target.name]: e.target.value }, () => {
-      let newQuery = "";
-      if (this.state.query === "undefined") newQuery = "";
-      else newQuery = this.state.query;
-      axios
-        .get(`/api/member/search/${newQuery}`)
+    const { query } = this.state;
 
-        .then(response =>
-          console.log(response.data)
-          //this.setState({ listUser: response.data })
-        )
-        .catch(er => console.log(er.response));
+
+    this.setState({ [e.target.name]: e.target.value }, () => {
+      let format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+      if (format.test(this.state.query)) {
+        return;
+      }
+      this.props.getSearchMembers(this.state.query);
     });
   };
 
@@ -77,29 +74,67 @@ class OrderScreen extends Component {
 
   };
 
-  handleAddToOrder = productDet => {
-    var exit = 0;
+  handleInputQtyChange(e, productDet) {
+    let totalTmp = 0, inputVal = 0;
+    if (e.target.value !== '') { inputVal = parseInt(e.target.value); }
+
     this.setState(state => {
       let listOrder = [...state.listOrder];
 
       listOrder.map(function (el, index) {
         if (productDet._id === el._id) {
+
+          //thêm món đã có sẵn trong order -> tăng qty 
+          const tempObj = { _id: el._id, name: el.name, price: el.price, orderQty: inputVal }
+          totalTmp = state.total - el.price * el.orderQty;
+          listOrder.splice(index, 1); //bỏ dòng order hiện tại  
+
+          console.log('inp:' + inputVal);
+          listOrder = [...listOrder, tempObj]; //thêm dòng order mới thay vào chỗ vừa bỏ
+          totalTmp = totalTmp + productDet.price * inputVal;
+
+          return false;
+        }
+      });
+
+      this.setState({ total: totalTmp })
+      return {
+        ...state.listOrder, //cai dau`
+        listOrder //neu ko co cai dau thi lay cai nay
+      }
+    });
+
+  }
+
+  handleAddToOrder = productDet => {
+    let exit = 0,
+      totalTmp = 0;
+
+    this.setState(state => {
+      let listOrder = [...state.listOrder];
+
+      listOrder.map(function (el, index) {
+        if (productDet._id === el._id) { //thêm món đã có sẵn trong order -> tăng qty
+
           const tempObj = { _id: el._id, name: el.name, price: el.price, orderQty: el.orderQty + 1 }
-          listOrder.splice(index, 1);
-          listOrder = [...listOrder, tempObj];
+          totalTmp = state.total - el.price * el.orderQty;
+          listOrder.splice(index, 1); //bỏ dòng order hiện tại        
+
+          listOrder = [...listOrder, tempObj]; //thêm dòng order mới thay vào chỗ vừa bỏ
+          totalTmp = state.total + productDet.price * 1;
+
           exit = 1;
           return;
         }
       });
 
-      if (exit === 0) {
+      if (exit === 0) { //thêm món chưa có sẵn trong order
         const orderDetail = { _id: productDet._id, name: productDet.name, price: productDet.price, orderQty: 1 };
         listOrder = [...state.listOrder, orderDetail]
 
-        var totalTmp = state.total + productDet.price * orderDetail.orderQty;
-        this.setState({ total: totalTmp })
+        totalTmp = state.total + productDet.price * orderDetail.orderQty;
       }
-
+      this.setState({ total: totalTmp })
       return {
         ...state.listOrder, //cai dau`
         listOrder //neu ko co cai dau thi lay cai nay
@@ -112,7 +147,7 @@ class OrderScreen extends Component {
     this.setState(state => {
 
       //set total invoice
-      var totalTmp = state.total - this.state.listOrder[index].price * this.state.listOrder[index].orderQty;
+      let totalTmp = state.total - this.state.listOrder[index].price * this.state.listOrder[index].orderQty;
       this.setState({ total: totalTmp })
 
       let listOrder = [...state.listOrder]
@@ -161,8 +196,8 @@ class OrderScreen extends Component {
     this.getTotalDocuments();
     this.getPages();
     this.props.getProducts(select, currentPage, query);
-    this.props.getMembers(select, currentPage, query);
-
+    //this.props.getMembers(select, currentPage, query);
+    this.props.getSearchMembers('');
     axios
       .get(`/api/member/${''}`)
       .then(response => {
@@ -292,7 +327,7 @@ class OrderScreen extends Component {
   render() {
     const { products, invoices, loading } = this.props.product;
     const { members } = this.props.member;
-    const { select, totalDocuments, pages, listOrder, listSelectMember, listUser, selectedMember, total } = this.state;
+    const { select, totalDocuments, pages, listOrder, listSelectMember, listUser, selectedMember, total, inputQty } = this.state;
 
     return (
       <React.Fragment>
@@ -330,21 +365,26 @@ class OrderScreen extends Component {
 
                   <ul className="list-group list-group-unbordered">
 
-                    <mobiscroll.Listview
+                    {/* <mobiscroll.Listview
                       theme="ios"
                       itemType={ListItem}
                       data={this.state.listOrder}
                       enhance={true}
                       stages={this.stages}
-                    />
-                    {/* {
+                    /> */}
+                    {
                       listOrder.map((eachProduct, index) => (
                         <li className="list-group-item">
-                          <a onClick={() => this.removeItem(index)} className="fa fa-trash-o"></a><b> {eachProduct.name} </b><a className="pull-right">{eachProduct.price}</a>
+                          <a style={{ cursor: 'pointer' }} onClick={() => this.removeItem(index)} className="fa fa-trash-o"></a>
+                          <b> {eachProduct.name} </b>
+                          x <input style={{ border: 'none', width: '30px' }} type="number" value={eachProduct.orderQty} onChange={e => this.handleInputQtyChange(e, eachProduct)} />
+                          <a className="pull-right">{eachProduct.price}</a>
                         </li>
                       ))
-                    } */}
-
+                    }
+                    <li className="list-group-item">
+                      <b>Total </b><a className="pull-right">{total}</a>
+                    </li>
                   </ul>
 
                   <a href="#" className="btn btn-primary btn-block" onClick={this.onSubmit}><b>Order</b></a>
@@ -428,7 +468,7 @@ class OrderScreen extends Component {
                   {/* /.tab-pane */}
 
                   <div className="tab-pane" id="settings">
-
+                    <MemberModal />
                     <div className="box-body">
                       <div
                         id="example1_wrapper"
@@ -436,25 +476,14 @@ class OrderScreen extends Component {
                       >
                         <div className="row">
                           <div>
-                            <div className="col-sm-6">
-                              <div
-                                className="dataTables_length"
-                                id="example1_length"
-                              >
-                                <label>
 
-                                  <MemberModal />
-
-                                </label>
-                              </div>
-                            </div>
 
                             <div className="col-sm-6">
                               <div
                                 id="example1_filter"
                                 className="dataTables_filter"
                               >
-                                <label style={{ float: "right" }}>
+                                <label style={{ float: "left" }}>
                                   Search:
                               <input
                                     type="search"
@@ -490,7 +519,7 @@ class OrderScreen extends Component {
                                 </tr>
                               </thead>
                               <tbody style={{ display: "block", overflow: "auto", height: "200px" }}>
-                                {listUser.map((eachMember, index) => (
+                                {members.map((eachMember, index) => (
                                   <tr>
                                     <td style={{ width: "6%" }}>{index + 1}</td>
                                     <td style={{ width: "20%" }}>{eachMember.name}</td>
@@ -539,6 +568,7 @@ OrderScreen.propTypes = {
   getProducts: PropTypes.func.isRequired,
   product: PropTypes.object.isRequired,
   getMembers: PropTypes.func.isRequired,
+  getSearchMembers: PropTypes.func.isRequired,
   member: PropTypes.object.isRequired,
   addInvoice: PropTypes.func.isRequired,
 };
@@ -551,7 +581,7 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getProducts, deleteProduct, getMembers, addInvoice, getInvoices }
+  { getProducts, deleteProduct, getMembers, getSearchMembers, addInvoice, getInvoices }
 )(OrderScreen);
 
 const menuStyle = {

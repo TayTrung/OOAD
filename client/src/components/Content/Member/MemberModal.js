@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import { connect } from "react-redux";
-import { addMember } from "../../../actions/memberActions";
+import { addMember, getMembers } from "../../../actions/memberActions";
 import { addInvoice } from "../../../actions/invoiceActions";
 
 class MemberModal extends Component {
@@ -25,6 +25,7 @@ class MemberModal extends Component {
       createAt: new Date()
     };
     this.props.addMember(newItem);
+    //this.props.getMembers('5', 1, '');
 
     // Close modal
     document.getElementById("triggerButton").click();
@@ -35,6 +36,7 @@ class MemberModal extends Component {
   };
 
   render() {
+    const { disabled, defaultPoint } = this.props;
     return (
       <React.Fragment>
         {/* Button trigger modal */}
@@ -114,6 +116,8 @@ class MemberModal extends Component {
                     id="point"
                     placeholder="Add point"
                     name="point"
+                    disabled="false"
+                    {...disabled}
                     onChange={this.onChange}
                   />
                 </div>
@@ -146,5 +150,5 @@ const mapStateToProps = state => ({
 });
 export default connect(
   mapStateToProps,
-  { addMember, addInvoice }
+  { addMember, getMembers, addInvoice }
 )(MemberModal);

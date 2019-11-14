@@ -9,6 +9,7 @@ export const ADD_MEMBER = "ADD_MEMBER";
 export const GET_MEMBER = "GET_MEMBER";
 export const DELETE_MEMBER = "DELETE_MEMBER";
 export const MEMBERS_LOADING = "MEMBERS_LOADING";
+export const GET_SEARCH_MEMBERS = "GET_SEARCH_MEMBERS";
 
 export const GET_PRODUCTS = "GET_PRODUCTS";
 export const ADD_PRODUCT = "ADD_PRODUCT";

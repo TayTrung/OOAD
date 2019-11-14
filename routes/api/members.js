@@ -5,15 +5,15 @@ const router = express.Router();
 const Member = require("../../models/Member");
 
 //search theo query, them duong dan /api/member/search/ trong file server
-router.get("/:query", (req, res) => {
+router.get("/search/:query", (req, res) => {
   const { query } = req.params;
-  let newQuery = "";
+  //let newQuery = "";
   if (query === "undefined") newQuery = "";
   else newQuery = query;
 
   Member.find({ name: { $regex: newQuery, $options: "i" } })
     .sort({ createAt: -1 }) //desc = -1 acs = 1
-    .then(member => res.json(member)) //return lại item
+    .then(member => res.json(member)) //return lại item 
     .catch(err => res.json(err)); //Catch lỗi rồi return ra;
 });
 

@@ -1,4 +1,5 @@
 import {
+    GET_SEARCH_MEMBERS,
     GET_MEMBERS,
     ADD_MEMBER,
     DELETE_MEMBER,
@@ -15,6 +16,12 @@ const initialState = {
 export default function (state = initialState, action) {
     switch (action.type) {
         case GET_MEMBERS:
+            return {
+                ...state,
+                members: action.payload,
+                loading: false
+            };
+        case GET_SEARCH_MEMBERS:
             return {
                 ...state,
                 members: action.payload,
