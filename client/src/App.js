@@ -1,10 +1,16 @@
 import React, { Component } from "react";
+
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Menu from "./components/Menu";
+
 import Category from "./components/Content/Category/Category";
 import CategoryEdit from "./components/Content/Category/CategoryEdit";
+
 import ErrorPage from "./components/Content/ErrorPage/ErrorPage";
+
+import Supplier from "./components/Content/Supplier/Supplier";
+import SupplierEdit from "./components/Content/Supplier/SupplierEdit"
 
 import { Provider } from "react-redux";
 import store from "./store";
@@ -40,8 +46,14 @@ export default class App extends Component {
             <Route
               exact
               path="/category/edit/:id"
-              component={CategoryEdit}
-            ></Route>
+              component={CategoryEdit}>
+              </Route>
+              <Route exact path="/supplier" component={Supplier}></Route>
+              <Route
+                exact
+                path="/supplier/edit/:id"
+                component={SupplierEdit}>
+              </Route>
             <Route exact path="/404" component={ErrorPage}></Route>
             {/* <Redirect to="/404"></Redirect> */}
           </div>

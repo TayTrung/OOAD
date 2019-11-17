@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
 const categories = require("./routes/api/categories");
+const suppliers = require("./routes/api/suppliers");
+const users = require("./routes/api/users");
 
 const app = express();
 
@@ -24,6 +26,8 @@ mongoose
 
 //Use routes (Mỗi lần tạo 1 route mới thì phải use nó ở đây thì mới chạy đc)
 app.use("/api/category", categories);
+app.use("/api/supplier", suppliers);
+app.use("/api/user", users);
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => console.log(`Server started on port ${port}`));

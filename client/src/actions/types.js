@@ -3,3 +3,15 @@ export const ADD_CATEGORY = "ADD_CATEGORY";
 export const DELETE_CATEGORY = "DELETE_CATEGORY";
 export const GET_CATEGORY = "GET_CATEGORY";
 export const CATEGORIES_LOADING = "CATEGORIES_LOADING";
+
+export const GET_SUPPLIERS = "GET_SUPPLIERS";
+export const ADD_SUPPLIER = "ADD_SUPPLIER";
+export const DELETE_SUPPLIER = "DELETE_SUPPLIER";
+export const GET_SUPPLIER = "GET_SUPPPLIER";
+export const SUPPLIERS_LOADING = "SUPPLIERS_LOADING";
+
+export const GET_USERS = "GET_USERS";
+export const ADD_USER = "ADD_USER";
+export const DELETE_USER = "DELETE_USER";
+export const GET_USER = "GET_USER";
+export const USERS_LOADING = "USERS_LOADING";
