@@ -1,4 +1,5 @@
 export const GET_CATEGORIES = "GET_CATEGORIES";
+export const UPDATE_CATEGORY = "UPDATE_CATEGORY";
 export const ADD_CATEGORY = "ADD_CATEGORY";
 export const DELETE_CATEGORY = "DELETE_CATEGORY";
 export const CATEGORIES_LOADING = "CATEGORIES_LOADING";
@@ -15,3 +16,9 @@ export const GET_ERRORS = "GET_ERRORS";
 export const CLEAR_ERRORS = "CLEAR_ERRORS";
 
 export const GET_HISTORY = "GET_HISTORY";
+
+export const GET_ROLES = "GET_ROLES";
+export const ADD_ROLE = "ADD_ROLE";
+export const DELETE_ROLE = "DELETE_ROLE";
+export const ROLES_LOADING = "ROLES_LOADING";
+export const UPDATE_ROLE = "UPDATE_ROLE";

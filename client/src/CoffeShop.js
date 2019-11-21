@@ -12,12 +12,15 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import Loader from "react-loader";
 import { Route, Switch, Redirect } from "react-router-dom";
+import Role from "./components/Content/Role/Role";
+import RoleEdit from "./components/Content/Role/RoleEdit";
 
 const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated,
   isLoading: state.auth.isLoading,
   history: state.history,
-  loaded: state.auth.loaded
+  isLoaded: state.auth.isLoaded,
+  user: state.auth.user
 });
 
 class CoffeShop extends Component {
@@ -35,60 +38,73 @@ class CoffeShop extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
   render() {
-    console.log(this.props.isAuthenticated);
-    console.log(this.props.isLoading);
-    console.log(this.props.loaded);
-
     return (
       <Fragment>
-        <Switch>
-          <Route
-            path="/login"
-            render={() => {
-              return !this.props.isAuthenticated ? (
-                <Login />
-              ) : (
-                <Redirect to="/" />
-              );
-            }}
-          />
-          <Loader>
+        {!this.props.isLoaded ? (
+          <Loader></Loader>
+        ) : (
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={() => {
+                return !this.props.isAuthenticated ? (
+                  <Redirect to="/login" />
+                ) : (
+                  <Redirect to="/home" />
+                );
+              }}
+            />
+
+            <Route
+              exact
+              path="/login"
+              render={() => {
+                return !this.props.isAuthenticated ? (
+                  <Login />
+                ) : (
+                  <Redirect to="/home" />
+                );
+              }}
+            />
             {this.props.isAuthenticated && (
               <Fragment>
                 <Header />
                 <Menu />
 
                 <div className="content-wrapper">
-                  <Route exact path="/">
-                    <Home />
-                  </Route>
-                  <Route path="/404">
-                    <ErrorPage />
-                  </Route>
-                  <Route exact path="/category">
-                    <Category />
-                  </Route>
-
-                  <Route
-                    path="/category/edit/:id"
-                    component={CategoryEdit}
-                  ></Route>
+                  <Switch>
+                    <Route exact path="/home">
+                      <Home />
+                    </Route>
+                    <Route path="/404">
+                      <ErrorPage />
+                    </Route>
+                    <Route exact path="/category">
+                      <Category />
+                    </Route>
+                    <Route exact path="/role">
+                      <Role />
+                    </Route>
+                    <Route
+                      exact
+                      path="/role/edit/:id"
+                      component={RoleEdit}
+                    ></Route>
+                    <Route
+                      exact
+                      path="/category/edit/:id"
+                      component={CategoryEdit}
+                    ></Route>
+                    <Route path="*" render={() => <Redirect to="/404" />} />
+                  </Switch>
                 </div>
                 <Footer />
               </Fragment>
             )}
-          </Loader>
-          <Route
-            path="*"
-            render={() => {
-              return !this.props.isAuthenticated ? (
-                <Redirect to="/login" />
-              ) : (
-                <Redirect to={this.state.firstPathname} />
-              );
-            }}
-          />
-        </Switch>
+            <Route path="*" render={() => <Redirect to="/login" />} />
+          </Switch>
+        )}
       </Fragment>
     );
   }
@@ -97,10 +113,8 @@ class CoffeShop extends Component {
 Category.propTypes = {
   isAuthenticated: PropTypes.bool,
   isLoading: PropTypes.bool,
-  loaded: PropTypes.bool
+  isLoaded: PropTypes.bool,
+  user: PropTypes.object
 };
 
-export default connect(
-  mapStateToProps,
-  { loadUser }
-)(CoffeShop);
+export default connect(mapStateToProps, { loadUser })(CoffeShop);

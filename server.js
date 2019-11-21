@@ -21,9 +21,17 @@ mongoose
   .then(() => console.log("Mongo DB Connected"))
   .catch(err => console.log(err));
 
+// mongoose.connection
+//   .collection("counters")
+//   .insertOne({ _id: "Category", sequence_value: 0 }, (err, res) => {
+//     if (err) throw err;
+//     console.log("Document inserted");
+//   });
+
 app.use("/api/category", require("./routes/api/categories"));
-app.use("/api/users", require("./routes/api/users"));
+app.use("/api/user", require("./routes/api/users"));
 app.use("/api/auth", require("./routes/api/authentication"));
+app.use("/api/role", require("./routes/api/roles"));
 
 const port = process.env.PORT || 5000;
 

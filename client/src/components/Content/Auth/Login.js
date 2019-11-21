@@ -2,7 +2,6 @@ import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { login } from "../../../actions/authActions";
 import { pushHistory } from "../../../actions/historyActions";
-import { useHistory, useLocation } from "react-router-dom";
 
 import PropTypes from "prop-types";
 
@@ -172,7 +171,4 @@ const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated
 });
 
-export default connect(
-  mapStateToProps,
-  { login, pushHistory }
-)(Login);
+export default connect(mapStateToProps, { login, pushHistory })(Login);

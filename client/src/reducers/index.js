@@ -4,10 +4,12 @@ import errorReducer from "./errorReducer";
 
 import authReducer from "./authReducer";
 import historyReducer from "./historyReducer";
+import roleReducer from "./roleReducer";
 
 export default combineReducers({
   category: categoryReducer,
   error: errorReducer,
   auth: authReducer,
-  history: historyReducer
+  history: historyReducer,
+  role: roleReducer
 });

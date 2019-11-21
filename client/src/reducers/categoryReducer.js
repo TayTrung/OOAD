@@ -2,13 +2,13 @@ import {
   GET_CATEGORIES,
   ADD_CATEGORY,
   DELETE_CATEGORY,
-  CATEGORIES_LOADING
+  UPDATE_CATEGORY
 } from "../actions/types";
 
 const initialState = {
   categories: [],
 
-  loading: false
+  isLoaded: false
 };
 
 export default function(state = initialState, action) {
@@ -17,7 +17,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         categories: action.payload,
-        loading: false
+        isLoaded: true
       };
     case DELETE_CATEGORY:
       return {
@@ -31,11 +31,12 @@ export default function(state = initialState, action) {
         ...state,
         categories: [action.payload, ...state.categories]
       };
-    case CATEGORIES_LOADING:
+    case UPDATE_CATEGORY:
       return {
-        ...state,
-        loading: true
+        ...state
+        // categories: [...state.slice(0, i), { ...state[i], likes }]
       };
+
     default:
       return state;
   }

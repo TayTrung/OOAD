@@ -6,7 +6,7 @@ import { pushHistory } from "../actions/historyActions";
 import PropTypes from "prop-types";
 class Header extends Component {
   componentDidMount() {
-    document.body.className = "hold-transition skin-blue sidebar-mini";
+    document.body.className = "hold-transition skin-blue fixed sidebar-mini";
   }
 
   static propTypes = {
@@ -17,7 +17,7 @@ class Header extends Component {
   handleLogout = e => {
     e.preventDefault();
     this.props.logout();
-    this.props.pushHistory("/login");
+    this.props.pushHistory("/");
   };
   render() {
     return (

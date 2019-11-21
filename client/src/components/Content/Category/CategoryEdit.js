@@ -1,8 +1,10 @@
 import React, { Fragment, Component } from "react";
-import axios from "axios";
+
 import { connect } from "react-redux";
-import { deleteCategory } from "../../../actions/categoryActions";
 import { pushHistory } from "../../../actions/historyActions";
+import Loader from "react-loader";
+import axios from "axios";
+import { updateCategory } from "../../../actions/categoryActions";
 
 class CategoryEdit extends Component {
   state = {
@@ -11,18 +13,30 @@ class CategoryEdit extends Component {
   };
   componentDidMount() {
     const { id } = this.props.match.params;
-
     axios
-      .get(`/api/category/${id}`)
+      .get(`/api/category/${id}`, this.tokenConfig(this.props.auth.token))
       .then(response => {
-        if (response.data === null) this.props.pushHistory("/404");
-        else
-          this.setState({ name: response.data.name, _id: response.data._id });
+        // console.log(response);
+
+        this.setState({ name: response.data.name, _id: response.data._id });
       })
-      .catch(error => {
-        console.log(error.response);
-      });
+      .catch(er => console.log(er.response));
   }
+  tokenConfig = token => {
+    const config = {
+      headers: {
+        "Content-type": "application/json"
+      }
+    };
+
+    //Header
+    if (token) {
+      config.headers["x-auth-token"] = token;
+    }
+
+    return config;
+  };
+
   handleChange = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
@@ -34,16 +48,16 @@ class CategoryEdit extends Component {
       name,
       _id
     };
+    this.props.updateCategory(newCategory);
+    // axios
+    //   .put(`/api/category/${_id}`, newCategory)
 
-    axios
-      .put(`/api/category/${_id}`, newCategory)
-
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(error => {
-        console.log(error.response);
-      });
+    //   .then(response => {
+    //     console.log(response.data);
+    //   })
+    //   .catch(error => {
+    //     console.log(error.response);
+    //   });
     //Quay về trang chính
     this.props.history.push("/category");
   };
@@ -56,105 +70,122 @@ class CategoryEdit extends Component {
 
     return (
       <Fragment>
-        {/* Content Header (Page header) */}
-        <section className="content-header">
-          <h1>
-            Category
-            {/* <small>Preview</small> */}
-          </h1>
-          <ol className="breadcrumb">
-            <li>
-              <a href="fake_url">
-                <i className="fa fa-dashboard" /> Home
-              </a>
-            </li>
-            <li>
-              <a href="fake_url">Category</a>
-            </li>
-            <li>
-              <a href="fake_url">Edit</a>
-            </li>
-          </ol>
-        </section>
-        {/* Main content */}
-        <section className="content">
-          <div className="row">
-            <div className="col-md-6">
-              <div className="box box-info">
-                <div className="box-header with-border">
-                  <h3 className="box-title">Horizontal Form</h3>
-                </div>
-                {/* /.box-header */}
-                {/* form start */}
-                <form className="form-horizontal" onSubmit={this.handleSubmit}>
-                  <div className="box-body">
-                    <div className="form-group">
-                      <label
-                        htmlFor="inputEmail3"
-                        className="col-sm-2 control-label"
-                      >
-                        ID
-                      </label>
-                      <div className="col-sm-10">
-                        <input
-                          name="_id"
-                          type="text"
-                          id="inputEmail3"
-                          placeholder="Loaiding..."
-                          className="form-control"
-                          defaultValue={_id}
-                          disabled
-                          onChange={this.handleChange}
-                        />
-                      </div>
+        {!_id ? (
+          <Loader></Loader>
+        ) : (
+          <Fragment>
+            {/* Content Header (Page header) */}
+            <section className="content-header">
+              <h1>
+                Category
+                {/* <small>Preview</small> */}
+              </h1>
+              <ol className="breadcrumb">
+                <li>
+                  <a href="fake_url">
+                    <i className="fa fa-dashboard" /> Home
+                  </a>
+                </li>
+                <li>
+                  <a href="fake_url">Category</a>
+                </li>
+                <li>
+                  <a href="fake_url">Edit</a>
+                </li>
+              </ol>
+            </section>
+            {/* Main content */}
+            <section className="content">
+              <div className="row">
+                <div className="col-md-6">
+                  <div className="box box-info">
+                    <div className="box-header with-border">
+                      <h3 className="box-title">Horizontal Form</h3>
                     </div>
-                    <div className="form-group">
-                      <label
-                        htmlFor="inputPassword3"
-                        className="col-sm-2 control-label"
-                      >
-                        Name
-                      </label>
-                      <div className="col-sm-10">
-                        <input
-                          name="name"
-                          type="text"
-                          className="form-control"
-                          id="inputName"
-                          placeholder="Loaiding..."
-                          defaultValue={name}
-                          onChange={this.handleChange}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  {/* /.box-body */}
-                  <div className="box-footer">
-                    <button
-                      type="button"
-                      onClick={this.handleCancel}
-                      className="btn btn-default"
+                    {/* /.box-header */}
+                    {/* form start */}
+                    <form
+                      className="form-horizontal"
+                      onSubmit={this.handleSubmit}
                     >
-                      Cancel
-                    </button>
-                    <button type="submit" className="btn btn-info pull-right">
-                      Save
-                    </button>
+                      <div className="box-body">
+                        <div className="form-group">
+                          <label
+                            htmlFor="inputEmail3"
+                            className="col-sm-2 control-label"
+                          >
+                            ID
+                          </label>
+                          <div className="col-sm-10">
+                            <input
+                              name="_id"
+                              type="text"
+                              id="inputEmail3"
+                              placeholder="Loading..."
+                              className="form-control"
+                              value={_id}
+                              disabled
+                              onChange={this.handleChange}
+                            />
+                          </div>
+                        </div>
+                        <div className="form-group">
+                          <label
+                            htmlFor="inputPassword3"
+                            className="col-sm-2 control-label"
+                          >
+                            Name
+                          </label>
+                          <div className="col-sm-10">
+                            <input
+                              name="name"
+                              type="text"
+                              className="form-control"
+                              id="inputName"
+                              placeholder="Loading..."
+                              value={name}
+                              onChange={this.handleChange}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      {/* /.box-body */}
+                      <div className="box-footer">
+                        <button
+                          type="button"
+                          onClick={this.handleCancel}
+                          className="btn btn-default"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          className="btn btn-info pull-right"
+                        >
+                          Save
+                        </button>
+                      </div>
+                      {/* /.box-footer */}
+                    </form>
                   </div>
-                  {/* /.box-footer */}
-                </form>
+                </div>
               </div>
-            </div>
-          </div>
-        </section>
+            </section>
+          </Fragment>
+        )}
       </Fragment>
     );
   }
 }
-const mapStateToProps = state => ({
-  history: state.history.history
-});
-export default connect(
-  mapStateToProps,
-  { deleteCategory, pushHistory }
-)(CategoryEdit);
+const mapStateToProps = (state, props) => {
+  return {
+    history: state.history.history,
+    auth: state.auth
+  };
+};
+
+export default connect(mapStateToProps, {
+  pushHistory,
+
+  updateCategory
+})(CategoryEdit);
