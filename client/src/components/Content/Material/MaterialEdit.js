@@ -10,24 +10,23 @@ class MaterialEdit extends Component {
   componentDidMount() {
     const { id } = this.props.match.params;
     console.log(id);
-    console.log(id);
-    // axios
-    //   .get(`/api/material/${id}`)
-    //   .then(response => {
-    //     console.log(response.data);
-    //     if (!response.data) this.props.history.push("/404");
-    //     else {
-    //       const { name, quantity, _id } = response.data;
-    //       this.setState({
-    //         name,
-    //         quantity,
-    //         _id
-    //       });
-    //     }
-    //   })
-    //   .catch(error => {
-    //     console.log(error.response);
-    //   });
+    axios
+      .get(`/api/material/${id}`)
+      .then(response => {
+        console.log(response.data);
+        if (!response.data) this.props.history.push("/404");
+        else {
+          const { name, quantity, _id } = response.data;
+          this.setState({
+            name,
+            quantity,
+            _id
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error.response);
+      });
   }
   handleChange = e => {
     this.setState({ [e.target.name]: e.target.value });
@@ -51,6 +50,7 @@ class MaterialEdit extends Component {
       .catch(error => {
         console.log(error.response);
       });
+
     //Quay về trang chính
     this.props.history.push("/material");
   };

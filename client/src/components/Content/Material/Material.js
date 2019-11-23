@@ -18,11 +18,12 @@ class Material extends Component {
 
   componentDidMount() {
     const { select, currentPage, query } = this.state;
+
+    this.props.getMaterials(select, currentPage, query);
+
     this.getTotalDocuments();
 
     this.getPages();
-
-    this.props.getMaterials(select, currentPage, query);
   }
 
   getTotalDocuments = () => {
@@ -68,15 +69,12 @@ class Material extends Component {
   };
 
   handleOnChange = e => {
-    this.setState(
-      { [e.target.name]: e.target.value, [e.target.quantity]: e.target.value },
-      () => {
-        const { select, currentPage, query } = this.state;
-        this.props.getMaterials(select, currentPage, query);
-        this.getPages();
-        this.getTotalDocuments();
-      }
-    );
+    this.setState({ [e.target.name]: e.target.value }, () => {
+      const { select, currentPage, query } = this.state;
+      this.props.getMaterials(select, currentPage, query);
+      this.getPages();
+      this.getTotalDocuments();
+    });
   };
 
   renderMaterials = () => {

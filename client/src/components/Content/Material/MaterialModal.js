@@ -101,7 +101,8 @@ class MaterialModal extends Component {
                     Quantity:
                   </label>
                   <input
-                    type="text"
+                    type="number"
+                    inputmode="numeric"
                     className="form-control"
                     id="quantity"
                     placeholder="Quantity (ex: 1, 5.54, ...)"
