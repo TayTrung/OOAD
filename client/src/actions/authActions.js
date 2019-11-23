@@ -33,6 +33,7 @@ export const loadUser = () => (dispatch, getState) => {
       });
     });
 };
+
 export const logout = () => dispatch => {
   dispatch({ type: LOGOUT_SUCCESS });
 };

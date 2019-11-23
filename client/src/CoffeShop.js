@@ -2,8 +2,16 @@ import React, { Component, Fragment } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Menu from "./components/Menu";
+
 import Category from "./components/Content/Category/Category";
 import CategoryEdit from "./components/Content/Category/CategoryEdit";
+
+import Material from "./components/Content/Material/Material";
+import MaterialEdit from "./components/Content/Material/MaterialEdit";
+
+import User from "./components/Content/User/User";
+import UserEdit from "./components/Content/User/UserEdit";
+
 import ErrorPage from "./components/Content/ErrorPage/ErrorPage";
 import Login from "./components/Content/Auth/Login";
 import Home from "./components/Content/Home/Home";
@@ -35,9 +43,9 @@ class CoffeShop extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
   render() {
-    console.log(this.props.isAuthenticated);
-    console.log(this.props.isLoading);
-    console.log(this.props.loaded);
+    console.log("isAuthenticated " + this.props.isAuthenticated);
+    console.log("isLoading " + this.props.isLoading);
+    console.log("loaded " + this.props.loaded);
 
     return (
       <Fragment>
@@ -52,32 +60,48 @@ class CoffeShop extends Component {
               );
             }}
           />
-          <Loader>
-            {this.props.isAuthenticated && (
-              <Fragment>
-                <Header />
-                <Menu />
 
-                <div className="content-wrapper">
-                  <Route exact path="/">
-                    <Home />
-                  </Route>
-                  <Route path="/404">
-                    <ErrorPage />
-                  </Route>
-                  <Route exact path="/category">
-                    <Category />
-                  </Route>
+          {this.props.isAuthenticated && (
+            <Fragment>
+              <Header />
+              <Menu />
 
-                  <Route
-                    path="/category/edit/:id"
-                    component={CategoryEdit}
-                  ></Route>
-                </div>
-                <Footer />
-              </Fragment>
-            )}
-          </Loader>
+              <div className="content-wrapper">
+                <Route exact path="/">
+                  <Home />
+                </Route>
+                <Route path="/404">
+                  <ErrorPage />
+                </Route>
+
+                {/* Category */}
+                <Route exact path="/category">
+                  <Category />
+                </Route>
+                <Route
+                  path="/category/edit/:id"
+                  component={CategoryEdit}
+                ></Route>
+
+                {/* Material */}
+                <Route exact path="/material">
+                  <Material />
+                </Route>
+                <Route
+                  path="/material/edit/:id"
+                  component={MaterialEdit}
+                ></Route>
+
+                {/* User */}
+                <Route exact path="/user">
+                  <User />
+                </Route>
+                <Route path="/user/edit/:id" component={UserEdit}></Route>
+              </div>
+              <Footer />
+            </Fragment>
+          )}
+
           <Route
             path="*"
             render={() => {
@@ -100,7 +124,4 @@ Category.propTypes = {
   loaded: PropTypes.bool
 };
 
-export default connect(
-  mapStateToProps,
-  { loadUser }
-)(CoffeShop);
+export default connect(mapStateToProps, { loadUser })(CoffeShop);

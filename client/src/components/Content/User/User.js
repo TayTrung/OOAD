@@ -1,16 +1,16 @@
 import React, { Component } from "react";
-import MaterialModal from "./MaterialModal";
-import MaterialRow from "./MaterialRow";
+import UserModal from "./UserModal";
+import UserRow from "./UserRow";
 import { connect } from "react-redux";
-import { getMaterials } from "../../../actions/materialActions";
+import { getUsers } from "../../../actions/userActions";
 import PropTypes from "prop-types";
 import axios from "axios";
 
 const mapStateToProps = state => ({
-  material: state.material
+  user: state.user
 });
 
-class Material extends Component {
+class User extends Component {
   state = {
     sort: [{ value: "10" }, { value: "20" }, { value: "30" }],
     select: "10",
@@ -26,7 +26,7 @@ class Material extends Component {
 
     this.getPages();
 
-    this.props.getMaterials(select, currentPage, query);
+    this.props.getUsers(select, currentPage, query);
   }
 
   getTotalDocuments = () => {
@@ -37,7 +37,7 @@ class Material extends Component {
     else newQuery = query;
 
     axios
-      .get(`/api/material/count/${newQuery}`)
+      .get(`/api/user/count/${newQuery}`)
       .then(response => {
         this.setState({ totalDocuments: response.data });
       })
@@ -52,7 +52,7 @@ class Material extends Component {
     else newQuery = query;
 
     axios
-      .get(`/api/material/count/${newQuery}`)
+      .get(`/api/user/count/${newQuery}`)
       .then(response => {
         let pages = Math.floor(response.data / select);
         let remainder = response.data % select;
@@ -86,26 +86,27 @@ class Material extends Component {
 
   rerenderPage = () => {
     const { select, currentPage, query } = this.state;
-    this.props.getMaterials(select, currentPage, query);
+    this.props.getUsers(select, currentPage, query);
     this.getPages();
     this.getTotalDocuments();
   };
 
-  renderMaterials = () => {
-    const { materials } = this.props.material;
-    return materials.map((eachMaterial, index) => (
-      <MaterialRow
+  renderUsers = () => {
+    const { users } = this.props.user;
+    return users.map((eachUser, index) => (
+      <UserRow
         history={this.props.history}
-        key={eachMaterial._id}
-        material={eachMaterial}
+        key={eachUser._id}
+        user={eachUser}
         index={index}
+        // deleteCategory={this.props.deleteCategory}
       />
     ));
   };
   handleChoosePage = e => {
     this.setState({ currentPage: e }, () => {
       const { select, currentPage, query } = this.state;
-      this.props.getMaterials(select, currentPage, query);
+      this.props.getUsers(select, currentPage, query);
     });
   };
 
@@ -161,7 +162,7 @@ class Material extends Component {
         {/* Content Header (Page header) */}
         <section className="content-header">
           <h1>
-            Category
+            User
             {/* <small>Preview</small> */}
           </h1>
           <ol className="breadcrumb">
@@ -171,7 +172,7 @@ class Material extends Component {
               </a>
             </li>
             <li>
-              <a href="fake_url">Category</a>
+              <a href="fake_url">User</a>
             </li>
           </ol>
         </section>
@@ -187,7 +188,7 @@ class Material extends Component {
                   </div>
 
                   <div className="col-md-4">
-                    <MaterialModal />
+                    <UserModal />
                   </div>
                 </div>
                 {/* /.box-header */}
@@ -241,20 +242,24 @@ class Material extends Component {
                         >
                           <thead>
                             <tr>
-                              <th style={{ width: "10%" }}>#</th>
-                              <th style={{ width: "20%" }}>Material</th>
-                              <th style={{ width: "20%" }}>Created date</th>
-                              <th style={{ width: "20%" }}>Quantity</th>
+                              <th style={{ width: "5%" }}>#</th>
+                              <th style={{ width: "5%" }}>ID Role</th>
+                              <th style={{ width: "10%" }}>Username</th>
+                              <th style={{ width: "20%" }}>Full name</th>
+                              <th style={{ width: "10%" }}>Phone number</th>
+                              <th style={{ width: "20%" }}>Address</th>
                               <th style={{ width: "30%" }}>Action</th>
                             </tr>
                           </thead>
-                          <tbody>{this.renderMaterials()}</tbody>
+                          <tbody>{this.renderUsers()}</tbody>
                           <tfoot>
                             <tr>
                               <th>#</th>
-                              <th>Material</th>
-                              <th>Created date</th>
-                              <th>Quantity</th>
+                              <th>ID Role</th>
+                              <th>Username</th>
+                              <th>Full name</th>
+                              <th>Phone number</th>
+                              <th>Address</th>
                               <th>Action</th>
                             </tr>
                           </tfoot>
@@ -299,12 +304,9 @@ class Material extends Component {
   }
 }
 
-Material.propTypes = {
-  getMaterials: PropTypes.func.isRequired,
-  material: PropTypes.object.isRequired
+User.propTypes = {
+  getUsers: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired
 };
 
-export default connect(
-  mapStateToProps,
-  { getMaterials }
-)(Material);
+export default connect(mapStateToProps, { getUsers })(User);

@@ -22,9 +22,9 @@ mongoose
   .catch(err => console.log(err));
 
 app.use("/api/category", require("./routes/api/categories"));
-app.use("/api/users", require("./routes/api/users"));
+app.use("/api/user", require("./routes/api/users"));
 app.use("/api/auth", require("./routes/api/authentication"));
-app.use("/api/materials", require("./routes/api/materials"));
+app.use("/api/material", require("./routes/api/materials"));
 
 const port = process.env.PORT || 5000;
 

@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-
 import { connect } from "react-redux";
 import { deleteMaterial } from "../../../actions/materialActions";
-
+import { pushHistory } from "../../../actions/historyActions";
 class MaterialRow extends Component {
   convertDate = date => {
     const newDate = new Date(date);
@@ -20,24 +19,25 @@ class MaterialRow extends Component {
     return year + "-" + month + "-" + dt;
   };
   handleEdit = id => {
-    this.props.history.push(`/material/edit/${id}`);
+    this.props.pushHistory(`/material/edit/${id}`);
   };
   handleDelete = id => {
+    // console.log(id);
     this.props.deleteMaterial(id);
   };
   render() {
-    const { Material, index } = this.props;
+    const { material, index } = this.props;
 
     return (
       <tr>
         <td>{index + 1}</td>
-        <td>{Material.name}</td>
-        <td>{this.convertDate(Material.createAt)}</td>
-        <td>{Material.quantity}</td>
+        <td>{material.name}</td>
+        <td>{this.convertDate(material.createAt)}</td>
+        <td>{material.quantity}</td>
         <td>
           <div className="btn-group">
             <button
-              onClick={() => this.handleEdit(Material._id)}
+              onClick={() => this.handleEdit(material._id)}
               type="button"
               className="btn btn-success"
             >
@@ -45,7 +45,7 @@ class MaterialRow extends Component {
             </button>
 
             <button
-              onClick={() => this.handleDelete(Material._id)}
+              onClick={() => this.handleDelete(material._id)}
               type="button"
               className="btn btn-danger"
             >
@@ -58,10 +58,7 @@ class MaterialRow extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  material: state.material
-});
 export default connect(
-  mapStateToProps,
-  { deleteMaterial }
+  null,
+  { deleteMaterial, pushHistory }
 )(MaterialRow);

@@ -5,7 +5,6 @@ import {
   MATERIALS_LOADING
 } from "./types";
 import axios from "axios";
-import { log } from "util";
 
 export const getMaterials = (show = 10, page = 1, query) => dispatch => {
   let newQuery = "";

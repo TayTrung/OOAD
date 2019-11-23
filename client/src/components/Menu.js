@@ -115,6 +115,12 @@ export default class Menu extends Component {
                   <span className="pull-right-container"></span>
                 </Link>
               </li>
+              <li>
+                <Link to="/user">
+                  <i className="fa fa-th" /> <span>User</span>
+                  <span className="pull-right-container"></span>
+                </Link>
+              </li>
               <li className="treeview">
                 <a href="fake_url">
                   <i className="fa fa-pie-chart" />

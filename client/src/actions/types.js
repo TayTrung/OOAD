@@ -8,6 +8,12 @@ export const ADD_MATERIAL = "ADD_MATERIAL";
 export const DELETE_MATERIAL = "DELETE_MATERIAL";
 export const MATERIALS_LOADING = "MATERIALS_LOADING";
 
+export const GET_USERS = "GET_USERS";
+export const ADD_USER = "ADD_USER";
+export const DELETE_USER = "DELETE_USER";
+export const USERS_LOADING = "USERS_LOADING";
+export const CHECK_CUR_PASS_USER = "CHECK_CUR_PASS_USER";
+
 export const USER_LOADING = "USER_LOADING";
 export const USER_LOADED = "USER_LOADED";
 export const AUTH_ERROR = "AUTH_ERROR";

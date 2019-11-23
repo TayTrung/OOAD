@@ -1,16 +1,21 @@
 import React, { Component } from "react";
 
 import { connect } from "react-redux";
-import { addMaterial } from "../../../actions/materialActions";
+import { addUser } from "../../../actions/userActions";
 
-class MaterialModal extends Component {
+class UserModal extends Component {
   state = {
-    _id: "",
-    name: "",
-    quantity: 0
+    idRole: "",
+    username: "",
+    password: "",
+    fullName: "",
+    phoneNumber: "",
+    address: ""
   };
 
   onChange = e => {
+    console.log(e.target.value);
+
     this.setState({ [e.target.name]: e.target.value });
   };
 
@@ -18,23 +23,20 @@ class MaterialModal extends Component {
     e.preventDefault();
 
     const newItem = {
-      name: this.state.name,
-      createAt: Date.now(),
-      quantity: Number(
-        Math.round(parseFloat(this.state.quantity + "e" + 2)) + "e-" + 2
-      )
+      idRole: this.state.idRole,
+      username: this.state.username,
+      password: this.state.password,
+      fullName: this.state.fullName,
+      phoneNumber: this.state.phoneNumber,
+      address: this.state.address
     };
+    this.props.addUser(newItem);
 
-    this.props.addMaterial(newItem);
-    console.log(newItem._id);
-    this.setState({ _id: newItem._id });
     // Close modal
     document.getElementById("triggerButton").click();
 
-    //Reload page
-    window.location.reload();
-
     //Toggle
+
     // this.props.toggle();
   };
   handleOnClick = () => {
@@ -54,7 +56,7 @@ class MaterialModal extends Component {
           data-target="#exampleModalCenter"
           onClick={this.handleOnClick}
         >
-          Add new Material
+          Add new user
         </button>
         {/* Modal */}
         <div
@@ -70,7 +72,7 @@ class MaterialModal extends Component {
               <div className="modal-header">
                 <span>
                   <h3 className="modal-title" id="exampleModalLongTitle">
-                    Add new Material
+                    Add new user
                   </h3>
                 </span>
                 <span>
@@ -86,26 +88,59 @@ class MaterialModal extends Component {
               </div>
               <div className="modal-body">
                 <div className="form-group">
-                  <label htmlFor="material-name" className="col-form-label">
-                    Name:
+                  <label htmlFor="user-idRole" className="col-form-label">
+                    idRole:
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    id="name"
-                    placeholder="Material name"
-                    name="name"
+                    id="userIdRole"
+                    placeholder="user ID role"
+                    name="idRole"
                     onChange={this.onChange}
                   />
-                  <label htmlFor="material-quantity" className="col-form-label">
-                    Quantity:
+                  <label htmlFor="user-username" className="col-form-label">
+                    Username:
                   </label>
                   <input
-                    type="number"
+                    type="text"
                     className="form-control"
-                    id="quantity"
-                    placeholder="Quantity (ex: 1, 5.54, ...)"
-                    name="quantity"
+                    id="userame"
+                    placeholder="username"
+                    name="username"
+                    onChange={this.onChange}
+                  />
+                  <label htmlFor="user-fullName" className="col-form-label">
+                    Fullname:
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="userFullname"
+                    placeholder="user fullname"
+                    name="fullName"
+                    onChange={this.onChange}
+                  />
+                  <label htmlFor="user-phoneNumber" className="col-form-label">
+                    Phone number:
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="userPhoneNumber"
+                    placeholder="user phone number"
+                    name="phoneNumber"
+                    onChange={this.onChange}
+                  />
+                  <label htmlFor="user-address" className="col-form-label">
+                    Address:
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="userAddress"
+                    placeholder="user address"
+                    name="address"
                     onChange={this.onChange}
                   />
                 </div>
@@ -123,7 +158,7 @@ class MaterialModal extends Component {
                   onClick={this.onSubmit}
                   className="btn btn-primary"
                 >
-                  Add Material
+                  Add user
                 </button>
               </div>
             </div>
@@ -134,9 +169,9 @@ class MaterialModal extends Component {
   }
 }
 const mapStateToProps = state => ({
-  material: state.material
+  user: state.user
 });
 export default connect(
   mapStateToProps,
-  { addMaterial }
-)(MaterialModal);
+  { addUser }
+)(UserModal);
