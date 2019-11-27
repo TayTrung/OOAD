@@ -53,7 +53,6 @@ class MemberRow extends Component {
         <td>{Member.phone}</td>
         <td>{Member.point}</td>
         <td>{this.convertDate(Member.createAt)}</td>
-        <td>Uknown</td>
         <td>
           <div className="btn-group">
             <button

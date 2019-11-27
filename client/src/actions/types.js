@@ -4,6 +4,12 @@ export const DELETE_CATEGORY = "DELETE_CATEGORY";
 export const GET_CATEGORY = "GET_CATEGORY";
 export const CATEGORIES_LOADING = "CATEGORIES_LOADING";
 
+export const GET_PAYSLIPS = "GET_PAYSLIPS";
+export const ADD_PAYSLIP = "ADD_PAYSLIP";
+export const DELETE_PAYSLIP = "DELETE_PAYSLIP";
+export const GET_PAYSLIP = "GET_PAYSLIP";
+export const PAYSLIPS_LOADING = "PAYSLIPS_LOADING";
+
 export const GET_MEMBERS = "GET_MEMBERS";
 export const ADD_MEMBER = "ADD_MEMBER";
 export const GET_MEMBER = "GET_MEMBER";
@@ -22,5 +28,7 @@ export const ADD_INVOICE = "ADD_INVOICE";
 export const GET_INVOICE = "GET_INVOICE";
 export const DELETE_INVOICE = "DELETE_INVOICE";
 export const INVOICES_LOADING = "INVOICES_LOADING";
+
+export const SHOW_NOTI = "SHOW_NOTI";
 
 export const ADD_REDUCER = 'ADD_REDUCER';

@@ -34,8 +34,6 @@ router.get('', (req, res) => {
 });
 
 router.put("/:id", (req, res) => {
-  console.log(req.body);
-
   const newMember = {
     name: req.body.name,
     phone: req.body.phone,
@@ -83,9 +81,10 @@ router.get("/count/:query", (req, res) => {
 //@access Public            (access hiện tại là public vì Trung chưa tạo authentication)
 router.post("/", (req, res) => {
   const newMember = new Member({
+    _id: req.body._id,
     name: req.body.name,
     phone: req.body.phone,
-    point: req.body.point
+    point: req.body.point,
   });
 
   newMember

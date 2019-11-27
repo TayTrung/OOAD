@@ -8,6 +8,7 @@ import {
 } from "./types";
 import axios from "axios";
 import { log } from "util";
+const mongoose = require("mongoose");
 
 export const getMembers = (show = 5, page = 1, query) => dispatch => {
   let newQuery = "";
@@ -47,9 +48,15 @@ export const deleteMember = id => dispatch => {
 
 export const addMember = newMember => dispatch => {
   axios.post("/api/member/", newMember).then(response => {
+
+    if (newMember._id instanceof mongoose.Types.ObjectId) {
+      newMember._id = newMember._id.toString();
+    }
+
     dispatch({
       type: ADD_MEMBER,
-      payload: newMember
+      payload: newMember,
+      response: response.status,
     });
   });
 };

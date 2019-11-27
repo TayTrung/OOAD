@@ -7,6 +7,7 @@ const categories = require("./routes/api/categories");
 const members = require("./routes/api/members");
 const products = require("./routes/api/products");
 const invoices = require("./routes/api/invoices");
+const payslips = require("./routes/api/payslips");
 
 const app = express();
 
@@ -31,6 +32,8 @@ app.use("/api/category", categories);
 app.use("/api/member", members);
 app.use("/api/product", products);
 app.use("/api/invoice", invoices);
+app.use("/api/payslip", payslips);
+
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => console.log(`Server started on port ${port}`));

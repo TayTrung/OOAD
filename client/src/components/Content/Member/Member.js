@@ -226,7 +226,6 @@ class Member extends Component {
                               <th style={{ width: "15%" }}>Phone</th>
                               <th style={{ width: "15%" }}>Point</th>
                               <th style={{ width: "15%" }}>Created date</th>
-                              <th style={{ width: "15%" }}>Creator</th>
                               <th style={{ width: "40%" }}>Action</th>
                             </tr>
                           </thead>
@@ -251,7 +250,6 @@ class Member extends Component {
                               <th>Phone</th>
                               <th>Point</th>
                               <th>Created date</th>
-                              <th>Creator</th>
                               <th>Action</th>
                             </tr>
                           </tfoot>

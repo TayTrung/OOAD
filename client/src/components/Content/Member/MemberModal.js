@@ -1,19 +1,43 @@
 import React, { Component } from "react";
-
 import { connect } from "react-redux";
 import { addMember, getMembers } from "../../../actions/memberActions";
 import { addInvoice } from "../../../actions/invoiceActions";
+import { showNoti } from "../../../actions/notificationActions";
+import 'react-notifications/lib/notifications.css';
+import Notification from "../../Notification";
+import PropTypes from "prop-types";
+import { NotificationContainer, NotificationManager } from 'react-notifications';
+
+const mongoose = require("mongoose");
 
 class MemberModal extends Component {
+
   state = {
     name: "",
     phone: "",
     point: 0,
+    _id: "",
+    msg: "",
+    notiType: "",
   };
 
   onChange = e => {
-    //console.log(e.target.value);
-    this.setState({ [e.target.name]: e.target.value });
+    //this.setState({ [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    let msg = "";
+
+    //Validation
+    const isPassed = this.validatePhone(value);
+    //const inputErrors = isPassed ? false : true;
+
+    if (!isPassed && name === 'phone') {
+      msg = "Phone can only contain numbers and spaces";
+    }
+    this.setState({ [name]: value, msg });
+  };
+
+  validatePhone = phone => {
+    return new RegExp(/^[0-9 ]*$/).test(phone);
   };
 
   onSubmit = e => {
@@ -22,23 +46,32 @@ class MemberModal extends Component {
       name: this.state.name,
       phone: this.state.phone,
       point: this.state.point,
-      createAt: new Date()
+      createAt: new Date(),
+      _id: mongoose.Types.ObjectId(),
     };
     this.props.addMember(newItem);
-    //this.props.getMembers('5', 1, '');
+
 
     // Close modal
     document.getElementById("triggerButton").click();
-
-    //Toggle
-
-    // this.props.toggle();
+  };
+  createNotification = () => {
+    // this.setState({ noti: 'success' });
+    const { notiType } = this.state;
+    this.props.showNoti('success');
   };
 
   render() {
-    const { disabled, defaultPoint } = this.props;
+    const { defaultPoint } = this.props;
+    const { notiType } = this.state;
+
     return (
       <React.Fragment>
+        <button className='btn btn-info'
+          onClick={this.createNotification}>Button
+        </button>
+        <NotificationContainer />
+
         {/* Button trigger modal */}
         <button
           type="button"
@@ -52,103 +85,118 @@ class MemberModal extends Component {
           Add new member
         </button>
         {/* Modal */}
-        <div
-          className="modal fade"
-          id="exampleModalCenter"
-          tabIndex={-1}
-          role="dialog"
-          aria-labelledby="exampleModalCenterTitle"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog modal-dialog-centered" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <span>
-                  <h3 className="modal-title" id="exampleModalLongTitle">
-                    Add new Member
+        <form onSubmit={this.onSubmit}>
+          <div
+            className="modal fade"
+            id="exampleModalCenter"
+            tabIndex={-1}
+            role="dialog"
+            aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true"
+          >
+            <div className="modal-dialog modal-dialog-centered" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <span>
+                    <h3 className="modal-title" id="exampleModalLongTitle">
+                      Add new Member
                   </h3>
-                </span>
-                <span>
+                  </span>
+                  <span>
+                    <button
+                      type="button"
+                      className="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true">×</span>
+                    </button>
+                  </span>
+                </div>
+                <div className="modal-body">
+                  {this.state.msg != '' ? (
+                    <div className="alert alert-danger alert-dismissible">
+                      {this.state.msg}
+                    </div>
+                  ) : null}
+                  <div className="form-group">
+                    <label htmlFor="recipient-name" className="col-form-label">
+                      Name:
+                  </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="name"
+                      placeholder="Add member"
+                      name="name"
+                      onChange={this.onChange}
+                      required
+                    />
+
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="recipient-name" className="col-form-label">
+                      Phone:
+                  </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="phone"
+                      placeholder="Add phone"
+                      name="phone"
+                      onChange={this.onChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="recipient-name" className="col-form-label">
+                      Point:
+                  </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="point"
+                      defaultValue={0}
+                      //placeholder="Add point"
+                      name="point"
+                      disabled={true}
+                      onChange={this.onChange}
+                    />
+                  </div>
+                </div>
+                <div className="modal-footer">
                   <button
                     type="button"
-                    className="close"
+                    className="btn btn-secondary"
                     data-dismiss="modal"
-                    aria-label="Close"
                   >
-                    <span aria-hidden="true">×</span>
-                  </button>
-                </span>
-              </div>
-              <div className="modal-body">
-                <div className="form-group">
-                  <label htmlFor="recipient-name" className="col-form-label">
-                    Name:
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="name"
-                    placeholder="Add member"
-                    name="name"
-                    onChange={this.onChange}
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="recipient-name" className="col-form-label">
-                    Phone:
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="phone"
-                    placeholder="Add phone"
-                    name="phone"
-                    onChange={this.onChange}
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="recipient-name" className="col-form-label">
-                    Point:
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="point"
-                    placeholder="Add point"
-                    name="point"
-                    disabled="false"
-                    {...disabled}
-                    onChange={this.onChange}
-                  />
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  data-dismiss="modal"
-                >
-                  Close
+                    Close
                 </button>
-                <button
-                  type="button"
-                  onClick={this.onSubmit}
-                  className="btn btn-primary"
-                >
-                  Add member
+                  <button
+                    type="submit"
+                    //onClick={this.onSubmit}
+                    className="btn btn-primary"
+                  >
+                    Add member
                 </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </form>
+
       </React.Fragment>
     );
   }
 }
+
+MemberModal.propTypes = {
+  showNoti: PropTypes.func.isRequired,
+};
 const mapStateToProps = state => ({
   member: state.member
 });
 export default connect(
   mapStateToProps,
-  { addMember, getMembers, addInvoice }
+  { addMember, getMembers, addInvoice, showNoti }
 )(MemberModal);

@@ -13,6 +13,7 @@ class MemberEdit extends Component {
     axios
       .get(`/api/member/${id}`)
       .then(response => {
+        console.log(response.data);
         if (response.data === null) this.props.history.push("/404");
         else
           this.setState({
@@ -109,7 +110,7 @@ class MemberEdit extends Component {
                           placeholder="Loading..."
                           className="form-control"
                           defaultValue={_id}
-                          disabled
+                          disabled={true}
                           onChange={this.handleChange}
                         />
                       </div>

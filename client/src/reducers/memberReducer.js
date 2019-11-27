@@ -9,8 +9,8 @@ import {
 
 const initialState = {
     members: [],
-
-    loading: false
+    loading: false,
+    response: null
 };
 
 export default function (state = initialState, action) {
@@ -37,7 +37,8 @@ export default function (state = initialState, action) {
         case ADD_MEMBER:
             return {
                 ...state,
-                members: [action.payload, ...state.members]
+                members: [action.payload, ...state.members],
+                response: action.response,
             };
         case MEMBERS_LOADING:
             return {
