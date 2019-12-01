@@ -8,7 +8,9 @@ import {
 
 const initialState = {
   payslips: [],
-  loading: false
+  isLoaded: false,
+  response: null,
+  type: null,
 };
 
 export default function (state = initialState, action) {
@@ -17,24 +19,27 @@ export default function (state = initialState, action) {
       return {
         ...state,
         payslips: action.payload,
-        loading: false
+        isLoaded: true,
       };
     case DELETE_PAYSLIP:
       return {
         ...state,
         payslips: state.payslips.filter(
           payslip => payslip._id !== action.payload._id
-        )
+        ),
+        type: action.type
       };
     case ADD_PAYSLIP:
       return {
         ...state,
-        payslips: [action.payload, ...state.payslips]
+        payslips: [action.payload, ...state.payslips],
+        response: action.response,
+        type: action.type,
       };
     case PAYSLIPS_LOADING:
       return {
         ...state,
-        loading: true
+        isLoaded: true,
       };
     default:
       return state;

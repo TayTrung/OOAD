@@ -28,18 +28,7 @@ class MemberRow extends Component {
     this.props.history.push(`/member/edit/${id}`);
   };
   handleDelete = id => {
-    // console.log(id);
-    // this.setState(prevState => {
-    //   let newState = { ...prevState }
-    //   let { categories } = newState
 
-    //   categories = categories.filter(c => c.id !== id)
-
-    //   return {
-    //     ...newState,
-    //     categories
-    //   }
-    // })
     this.props.deleteMember(id);
   };
 

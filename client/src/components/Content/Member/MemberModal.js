@@ -1,12 +1,16 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { addMember, getMembers } from "../../../actions/memberActions";
 import { addInvoice } from "../../../actions/invoiceActions";
 import { showNoti } from "../../../actions/notificationActions";
 import 'react-notifications/lib/notifications.css';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 import Notification from "../../Notification";
 import PropTypes from "prop-types";
-import { NotificationContainer, NotificationManager } from 'react-notifications';
+
+
+import Loader from "react-loader";
+
 
 const mongoose = require("mongoose");
 
@@ -21,6 +25,24 @@ class MemberModal extends Component {
     notiType: "",
   };
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+
+    if (prevProps.member.members !== this.props.member.members) {
+      if (this.props.isLoaded === false) {
+        return;
+      };
+
+      if (this.props.member.type === 'DELETE_MEMBER' || this.props.member.type === 'GET_MEMBERS') {
+        return;
+      }
+
+      if (this.props.member.response === 200) {
+        this.setState({ notiType: 'success' });
+      } else {
+        this.setState({ notiType: 'failure' });
+      }
+    }
+  }
   onChange = e => {
     //this.setState({ [e.target.name]: e.target.value });
     const { name, value } = e.target;
@@ -51,25 +73,22 @@ class MemberModal extends Component {
     };
     this.props.addMember(newItem);
 
-
     // Close modal
     document.getElementById("triggerButton").click();
   };
   createNotification = () => {
-    // this.setState({ noti: 'success' });
     const { notiType } = this.state;
-    this.props.showNoti('success');
+    this.props.showNoti(notiType);
+    this.setState({ notiType: '' });
   };
 
   render() {
-    const { defaultPoint } = this.props;
     const { notiType } = this.state;
-
     return (
-      <React.Fragment>
-        <button className='btn btn-info'
-          onClick={this.createNotification}>Button
-        </button>
+      <Fragment>
+        {notiType !== "" ? (
+          this.createNotification()
+        ) : null}
         <NotificationContainer />
 
         {/* Button trigger modal */}
@@ -185,7 +204,7 @@ class MemberModal extends Component {
           </div>
         </form>
 
-      </React.Fragment>
+      </Fragment>
     );
   }
 }
@@ -194,7 +213,8 @@ MemberModal.propTypes = {
   showNoti: PropTypes.func.isRequired,
 };
 const mapStateToProps = state => ({
-  member: state.member
+  member: state.member,
+  isLoaded: state.member.isLoaded
 });
 export default connect(
   mapStateToProps,

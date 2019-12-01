@@ -20,7 +20,6 @@ export default class Notification extends Component {
         const { type } = this.props;
         return (
             <div>
-
                 {this.createNotification(type)}
                 <NotificationContainer />
             </div>

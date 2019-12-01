@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import axios from "axios";
@@ -8,16 +8,19 @@ import {
   getProducts,
   deleteProduct
 } from "../../../actions/productActions";
+import { showNoti } from "../../../actions/notificationActions"
 import MemberModal from "../Member/MemberModal";
-import mobiscroll from "@mobiscroll/react";
 import Select from 'react-select';
-import "@mobiscroll/react/dist/css/mobiscroll.min.css";
+import Loader from "react-loader";
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 
 class OrderScreen extends Component {
   constructor(props) {
     super(props);
   }
   state = {
+    invisibleInpUserVal: '',
+    invisibleInpMemVal: '',
     listSelectMember: [],
     listSelectUser: [],
     selectedMember: '',
@@ -34,13 +37,31 @@ class OrderScreen extends Component {
     currentPage: 1,
     pages: [],
     totalDocuments: 0,
-    query: ""
+    query: "",
+
+    notiType: "",
   };
+
+  onStaffNameChange = (selectedUser) => {
+    this.setState({ invisibleInpUserVal: selectedUser.value });
+  };
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.invoice.invoices !== this.props.invoice.invoices) {
+      if (this.props.isLoaded === false) {
+        return;
+      };
+      if (this.props.member.type === 'GET_INVOICES') return;
+      if (this.props.invoice.response === 200) {
+        this.setState({ notiType: 'success' });
+        window.location.reload();
+      } else {
+        this.setState({ notiType: 'failure' });
+      }
+    }
+  }
 
   handleOnSearchChange = e => {
     const { query } = this.state;
-
-
     this.setState({ [e.target.name]: e.target.value }, () => {
       let format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
       if (format.test(this.state.query)) {
@@ -56,8 +77,10 @@ class OrderScreen extends Component {
 
   onChangeSelectedMember = (selectedMember) => {
     this.setState({ selectedMember: selectedMember });
+    this.setState({ invisibleInpMemVal: selectedMember.value });
   };
 
+  //load len list member
   onListMemberClick = (selectedMember) => {
 
     if (this.props.member.members.length !== this.state.listSelectMember.length)
@@ -89,7 +112,6 @@ class OrderScreen extends Component {
           totalTmp = state.total - el.price * el.orderQty;
           listOrder.splice(index, 1); //bỏ dòng order hiện tại  
 
-          console.log('inp:' + inputVal);
           listOrder = [...listOrder, tempObj]; //thêm dòng order mới thay vào chỗ vừa bỏ
           totalTmp = totalTmp + productDet.price * inputVal;
 
@@ -168,14 +190,10 @@ class OrderScreen extends Component {
       createddate: new Date(),
       comments: this.state.comments,
     };
-
-    // const newInvoice = {
-    //   idMember: "a",
-    //   idUser: "a",
-    //   totalAmt: 0,
-    //   createddate: new Date(),
-    //   comments: "a",
-    // };
+    if (this.state.total === 0) {
+      this.setState({ notiType: 'warning-order' });
+      return;
+    };
     this.props.addInvoice(newInvoice);
   };
 
@@ -202,7 +220,7 @@ class OrderScreen extends Component {
       .get(`/api/member/${''}`)
       .then(response => {
         this.setState({ listUser: response.data });
-        console.log(response.data);
+
       })
       .catch(error => {
         console.log(error.response);
@@ -220,7 +238,7 @@ class OrderScreen extends Component {
       .get(`/api/product/count/${newQuery}`)
       .then(response => {
         this.setState({ totalDocuments: response.data });
-        console.log(response.data);
+
       })
       .catch(er => {
         console.log(er.response);
@@ -323,235 +341,255 @@ class OrderScreen extends Component {
       }
     }]
   };
+  createNotification = () => {
+    this.props.showNoti(this.state.notiType);
+    this.setState({ notiType: '' });
+
+  };
 
   render() {
-    const { products, invoices, loading } = this.props.product;
+    const { products } = this.props.product;
     const { members } = this.props.member;
-    const { select, totalDocuments, pages, listOrder, listSelectMember, listUser, selectedMember, total, inputQty } = this.state;
+    const { isLoaded } = this.props;
+    const { invisibleInpUserVal, invisibleInpMemVal, listOrder, listSelectMember, total } = this.state;
 
     return (
-      <React.Fragment>
-        {/* Content Header (Page header) */}
-        <section className="content-header">
-          <h1>
-            Order
+      <Fragment>
+        {!isLoaded ? (
+          <Loader></Loader>
+        ) : (
+            <React.Fragment>
+              {this.state.notiType !== "" ? (
+                this.createNotification()
+              ) : null}
+              <NotificationContainer />
+
+              {/* Content Header (Page header) */}
+              <section className="content-header">
+                <h1>
+                  Order
             {/* <small>Preview</small> */}
-          </h1>
-          <ol className="breadcrumb">
-            <li>
-              <a href="fake_url">
-                <i className="fa fa-dashboard" /> Home
+                </h1>
+                <ol className="breadcrumb">
+                  <li>
+                    <a href="fake_url">
+                      <i className="fa fa-dashboard" /> Home
               </a>
-            </li>
-            <li>
-              <a href="fake_url">Order</a>
-            </li>
-          </ol>
-        </section>
-        {/* Main content */}
+                  </li>
+                  <li>
+                    <a href="fake_url">Order</a>
+                  </li>
+                </ol>
+              </section>
+              {/* Main content */}
 
-        <section className="content">
+              <section className="content">
+                <form onSubmit={this.onSubmit}>
+                  <div className="row">
+                    <div className="col-md-3">
+                      {/* Profile Image */}
+                      <div className="box box-primary">
+                        <div className="box-body box-profile">
 
-          <div className="row">
-            <div className="col-md-3">
+                          <h3 className="profile-username text-center">Order</h3>
 
-              {/* Profile Image */}
-              <div className="box box-primary">
-                <div className="box-body box-profile">
+                          <p className="text-muted text-center">{this.convertDate(new Date())}</p>
 
-                  <h3 className="profile-username text-center">Order</h3>
+                          <ul className="list-group list-group-unbordered">
+                            {
+                              listOrder.map((eachProduct, index) => (
+                                <li className="list-group-item">
+                                  <a style={{ cursor: 'pointer' }} onClick={() => this.removeItem(index)} className="fa fa-trash-o"></a>
+                                  <b> {eachProduct.name} </b>
+                                  x <input style={{ border: 'none', width: '50px' }} type="number" value={eachProduct.orderQty} onChange={e => this.handleInputQtyChange(e, eachProduct)} />
+                                  <a className="pull-right">{eachProduct.price}</a>
+                                </li>
+                              ))
+                            }
+                            <li className="list-group-item">
+                              <b>Total </b><a className="pull-right">{total}</a>
+                            </li>
+                          </ul>
 
-                  <p className="text-muted text-center">{this.convertDate(new Date())}</p>
-
-                  <ul className="list-group list-group-unbordered">
-
-                    {/* <mobiscroll.Listview
-                      theme="ios"
-                      itemType={ListItem}
-                      data={this.state.listOrder}
-                      enhance={true}
-                      stages={this.stages}
-                    /> */}
-                    {
-                      listOrder.map((eachProduct, index) => (
-                        <li className="list-group-item">
-                          <a style={{ cursor: 'pointer' }} onClick={() => this.removeItem(index)} className="fa fa-trash-o"></a>
-                          <b> {eachProduct.name} </b>
-                          x <input style={{ border: 'none', width: '30px' }} type="number" value={eachProduct.orderQty} onChange={e => this.handleInputQtyChange(e, eachProduct)} />
-                          <a className="pull-right">{eachProduct.price}</a>
-                        </li>
-                      ))
-                    }
-                    <li className="list-group-item">
-                      <b>Total </b><a className="pull-right">{total}</a>
-                    </li>
-                  </ul>
-
-                  <a href="#" className="btn btn-primary btn-block" onClick={this.onSubmit}><b>Order</b></a>
-                </div>
-                {/* /.box-body */}
-              </div>
-              {/* /.box */}
-
-              {/* About Me Box */}
-              <div className="box box-primary">
-                <div className="box-header with-border">
-                  <h3 className="box-title">Note</h3>
-                </div>
-                {/* /.box-header */}
-                <div className="box-body">
-                  <strong><i className="fa fa-address-book margin-r-5"></i> Staff name</strong>
-                  <Select
-                    name='idUser'
-                    id='idUser'
-                    onMenuOpen={this.onListMemberClick}
-                    onChange={this.onChange1}
-                    isSearchable={true}
-                    options={listSelectMember}>
-                  </Select>
-                  <br />
-                  <strong><i className="fa fa-phone margin-r-5"></i> Customer phone</strong>
-
-                  <Select
-                    name='idMember'
-                    id='idMember'
-                    onMenuOpen={this.onListMemberClick}
-                    onChange={this.onChangeSelectedMember}
-                    isSearchable={true}
-                    options={listSelectMember}>
-                  </Select>
-                  <br />
-
-                  <strong><i className="fa fa-sticky-note-o margin-r-5"></i> Notes</strong>
-                  <input onChange={this.onChange} type="text" className="form-control" id="comments" name='comments' placeholder="Enter notes">
-                  </input>
-
-                </div>
-                {/* /.box-body */}
-              </div>
-              {/* /.box */}
-            </div>
-            {/* /.col */}
-
-            <div className="col-md-9">
-              <div className="nav-tabs-custom">
-                <ul className="nav nav-tabs">
-                  <li className="active"><a href="#activity" data-toggle="tab">Drink</a></li>
-                  <li><a href="#timeline" data-toggle="tab">Food</a></li>
-                  <li><a href="#settings" data-toggle="tab">Customers</a></li>
-                </ul>
-                <div className="tab-content">
-                  <div className="active tab-pane" id="activity">
-                    <div className="box box-primary">
-
-                      {products.map((eachProduct, index) => (
-                        <div key={eachProduct._id} style={menuStyle} className="box-body box-profile">
-                          <img className="profile-user-img img-responsive img-circle" src={eachProduct.linkPic} alt="User profile picture" />
-                          <h3 className="profile-username text-center">{eachProduct.name}</h3>
-                          <p className="text-muted text-center">{eachProduct.price} VND</p>
-
-                          <a href="#" className="btn btn-primary btn-block"
-                            onClick={() => this.handleAddToOrder(eachProduct)}>
-                            <b>
-                              Add to order
-                              </b></a>
+                          <button className="btn btn-primary btn-block" type="submit"><b>Order</b></button>
                         </div>
-                      ))}
+                        {/* /.box-body */}
+                      </div>
+                      {/* /.box */}
 
+                      {/* About Me Box */}
+                      <div className="box box-primary">
+                        <div className="box-header with-border">
+                          <h3 className="box-title">Note</h3>
+                        </div>
+                        {/* /.box-header */}
+                        <div className="box-body">
+                          <strong><i className="fa fa-address-book margin-r-5"></i> Staff name</strong>
+                          <Select
+                            name='idUser'
+                            id='idUser'
+                            onMenuOpen={this.onListMemberClick}
+                            onChange={this.onStaffNameChange}
+                            isSearchable={true}
+                            options={listSelectMember}>
+                          </Select>
+                          <input
+                            style={{ opacity: 0, height: 0 }}
+                            required
+                            value={invisibleInpUserVal}
+                          />
+                          <br />
+                          <strong><i className="fa fa-phone margin-r-5"></i> Customer phone</strong>
+
+                          <Select
+                            name='idMember'
+                            id='idMember'
+                            onMenuOpen={this.onListMemberClick}
+                            onChange={this.onChangeSelectedMember}
+                            isSearchable={true}
+                            options={listSelectMember}
+                            required>
+                          </Select>
+                          <input
+                            style={{ opacity: 0, height: 0 }}
+                            required
+                            value={invisibleInpMemVal}
+                          />
+                          <br />
+                          <strong><i className="fa fa-sticky-note-o margin-r-5"></i> Notes</strong>
+                          <input
+                            required
+                            onChange={this.onChange}
+                            type="text"
+                            className="form-control"
+                            id="comments" name='comments'
+                            placeholder="Enter notes">
+                          </input>
+
+                        </div>
+                        {/* /.box-body */}
+                      </div>
+                      {/* /.box */}
                     </div>
-                  </div>
-                  {/* /.tab-pane */}
+                    {/* /.col */}
 
-                  <div className="tab-pane" id="timeline">
-                    <p>ttt</p>
-                  </div>
-                  {/* /.tab-pane */}
+                    <div className="col-md-9">
+                      <div className="nav-tabs-custom">
+                        <ul className="nav nav-tabs">
+                          <li className="active"><a href="#activity" data-toggle="tab">Drink</a></li>
+                          <li><a href="#timeline" data-toggle="tab">Food</a></li>
+                          <li><a href="#settings" data-toggle="tab">Customers</a></li>
+                        </ul>
+                        <div className="tab-content">
+                          <div className="active tab-pane" id="activity">
+                            <div className="box box-primary">
 
-                  <div className="tab-pane" id="settings">
-                    <MemberModal />
-                    <div className="box-body">
-                      <div
-                        id="example1_wrapper"
-                        className="dataTables_wrapper form-inline dt-bootstrap"
-                      >
-                        <div className="row">
-                          <div>
+                              {products.map((eachProduct, index) => (
+                                <div key={eachProduct._id} style={menuStyle} className="box-body box-profile">
+                                  <img className="profile-user-img img-responsive img-circle" src={eachProduct.linkPic} alt="User profile picture" />
+                                  <h3 className="profile-username text-center">{eachProduct.name}</h3>
+                                  <p className="text-muted text-center">{eachProduct.price} VND</p>
 
+                                  <a href="javascript:void(0);" className="btn btn-primary btn-block"
+                                    onClick={() => this.handleAddToOrder(eachProduct)}>
+                                    <b>
+                                      Add to order
+                              </b></a>
+                                </div>
+                              ))}
 
-                            <div className="col-sm-6">
-                              <div
-                                id="example1_filter"
-                                className="dataTables_filter"
-                              >
-                                <label style={{ float: "left" }}>
-                                  Search:
-                              <input
-                                    type="search"
-                                    name="query"
-                                    style={{ margin: "0px 5px" }}
-                                    className="form-control input-sm"
-                                    placeholder="Find me  "
-                                    aria-controls="example1"
-                                    onChange={this.handleOnSearchChange}
-                                    value={this.state.query}
-                                  />
-                                </label>
-                              </div>
                             </div>
                           </div>
-                        </div>
+                          {/* /.tab-pane */}
 
-                        <div className="row">
-                          <div className="col-sm-12">
-                            <table
-                              id="example1"
-                              className="table table-bordered table-striped"
-
-                            >
-                              <thead style={{ display: "block" }}>
-                                <tr>
-                                  <th style={{ width: "5%" }}>#</th>
-                                  <th style={{ width: "20%" }}>Member</th>
-                                  <th style={{ width: "15%" }}>Phone</th>
-                                  <th style={{ width: "15%" }}>Point</th>
-                                  <th style={{ width: "15%" }}>Created date</th>
-
-                                </tr>
-                              </thead>
-                              <tbody style={{ display: "block", overflow: "auto", height: "200px" }}>
-                                {members.map((eachMember, index) => (
-                                  <tr>
-                                    <td style={{ width: "6%" }}>{index + 1}</td>
-                                    <td style={{ width: "20%" }}>{eachMember.name}</td>
-                                    <td style={{ width: "15%" }}>{eachMember.phone}</td>
-                                    <td style={{ width: "15%" }}>{eachMember.point}</td>
-                                    <td style={{ width: "15%" }}>{this.convertDate(eachMember.createAt)}</td>
-
-                                  </tr>
-
-                                ))}
-                              </tbody>
-
-                            </table>
+                          <div className="tab-pane" id="timeline">
+                            <p>ttt</p>
                           </div>
+                          {/* /.tab-pane */}
+
+                          <div className="tab-pane" id="settings">
+                            <MemberModal />
+                            <div className="box-body">
+                              <div
+                                id="example1_wrapper"
+                                className="dataTables_wrapper form-inline dt-bootstrap"
+                              >
+                                <div className="row">
+                                  <div>
+                                    <div className="col-sm-6">
+                                      <div
+                                        id="example1_filter"
+                                        className="dataTables_filter"
+                                      >
+                                        <label style={{ float: "left" }}>
+                                          Search:
+                                          <input
+                                            type="search"
+                                            name="query"
+                                            style={{ margin: "0px 5px" }}
+                                            className="form-control input-sm"
+                                            placeholder="Find me  "
+                                            aria-controls="example1"
+                                            onChange={this.handleOnSearchChange}
+                                            value={this.state.query}
+                                          />
+                                        </label>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="row">
+                                  <div className="col-sm-12">
+                                    <table
+                                      id="example1"
+                                      className="table table-bordered table-striped"
+                                    >
+                                      <thead style={{ display: "block" }}>
+                                        <tr>
+                                          <th style={{ width: "5%" }}>#</th>
+                                          <th style={{ width: "20%" }}>Member</th>
+                                          <th style={{ width: "15%" }}>Phone</th>
+                                          <th style={{ width: "15%" }}>Point</th>
+                                          <th style={{ width: "15%" }}>Created date</th>
+
+                                        </tr>
+                                      </thead>
+                                      <tbody style={{ display: "block", overflow: "auto", height: "200px" }}>
+                                        {members.map((eachMember, index) => (
+                                          <tr>
+                                            <td style={{ width: "6%" }}>{index + 1}</td>
+                                            <td style={{ width: "20%" }}>{eachMember.name}</td>
+                                            <td style={{ width: "15%" }}>{eachMember.phone}</td>
+                                            <td style={{ width: "15%" }}>{eachMember.point}</td>
+                                            <td style={{ width: "15%" }}>{this.convertDate(eachMember.createAt)}</td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+
+                                    </table>
+                                  </div>
+                                </div>
+
+                              </div>
+                              {/*/.col (left) */}
+                            </div>
+                          </div>
+                          {/* /.tab-pane */}
                         </div>
-
                       </div>
-                      {/*/.col (left) */}
+                      {/* /.tab-content */}
                     </div>
+                    {/* /.nav-tabs-custom */}
                   </div>
-                  {/* /.tab-pane */}
-                </div>
-              </div>
-              {/* /.tab-content */}
-            </div>
-            {/* /.nav-tabs-custom */}
-          </div>
+                </form>
 
-        </section >
+              </section >
 
-        {/* /.content */}
-      </React.Fragment >
+              {/* /.content */}
+            </React.Fragment >
+          )}
+      </Fragment>
     );
   }
 }
@@ -577,16 +615,14 @@ const mapStateToProps = state => ({
   product: state.product,
   member: state.member,
   invoice: state.invoice,
+  isLoaded: state.member.isLoaded,
 });
 
 export default connect(
   mapStateToProps,
-  { getProducts, deleteProduct, getMembers, getSearchMembers, addInvoice, getInvoices }
+  { getProducts, deleteProduct, getMembers, getSearchMembers, addInvoice, getInvoices, showNoti }
 )(OrderScreen);
 
 const menuStyle = {
   display: 'inline-block',
 };
-const barScroll = {
-  style: 'overflow-x:auto'
-}

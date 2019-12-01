@@ -9,8 +9,9 @@ import {
 
 const initialState = {
     members: [],
-    loading: false,
-    response: null
+    isLoaded: false,
+    response: null,
+    type: null,
 };
 
 export default function (state = initialState, action) {
@@ -19,31 +20,34 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 members: action.payload,
-                loading: false
+                isLoaded: true,
+                type: action.type
             };
         case GET_SEARCH_MEMBERS:
             return {
                 ...state,
                 members: action.payload,
-                loading: false
+                isLoaded: true
             };
         case DELETE_MEMBER:
             return {
                 ...state,
                 members: state.members.filter(
                     member => member._id !== action.payload._id
-                )
+                ),
+                type: action.type,
             };
         case ADD_MEMBER:
             return {
                 ...state,
                 members: [action.payload, ...state.members],
                 response: action.response,
+                type: action.type,
             };
         case MEMBERS_LOADING:
             return {
                 ...state,
-                loading: true
+                isLoaded: true
             };
         default:
             return state;

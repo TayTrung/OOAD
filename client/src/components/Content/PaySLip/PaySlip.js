@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import PaySlipModal from "./PaySlipModal";
 import PaySlipRow from "./PaySlipRow";
 import { connect } from "react-redux";
@@ -6,6 +6,7 @@ import {
   getPaySlips,
   deletePaySlip
 } from "../../../actions/payslipActions";
+import Loader from "react-loader";
 import PropTypes from "prop-types";
 import axios from "axios";
 
@@ -117,199 +118,204 @@ class PaySlip extends Component {
   };
 
   render() {
-    const { payslips, loading } = this.props.payslip;
+    const { payslips } = this.props.payslip;
+    const { isLoaded } = this.props;
     const { select, totalDocuments, pages } = this.state;
     return (
-      <React.Fragment>
-        {/* Content Header (Page header) */}
-        <section className="content-header">
-          <h1>
-            Pay slip
+      <Fragment>
+        {!isLoaded ? (
+          <Loader></Loader>
+        ) : (<React.Fragment>
+          {/* Content Header (Page header) */}
+          <section className="content-header">
+            <h1>
+              Pay slip
             {/* <small>Preview</small> */}
-          </h1>
-          <ol className="breadcrumb">
-            <li>
-              <a href="fake_url">
-                <i className="fa fa-dashboard" /> Home
+            </h1>
+            <ol className="breadcrumb">
+              <li>
+                <a href="fake_url">
+                  <i className="fa fa-dashboard" /> Home
               </a>
-            </li>
-            <li>
-              <a href="fake_url">Pay slip</a>
-            </li>
-          </ol>
-        </section>
-        {/* Main content */}
-        <section className="content">
-          <div className="row">
-            {/* left column */}
-            <div className="col-md-12">
-              <div className="box">
-                <div className="box-header" style={{ marginTop: "5px" }}>
-                  <div style={{ paddingLeft: "5px" }} className="col-md-8">
-                    <h3 className="box-title">Data Table With Full Features</h3>
-                  </div>
+              </li>
+              <li>
+                <a href="fake_url">Pay slip</a>
+              </li>
+            </ol>
+          </section>
+          {/* Main content */}
+          <section className="content">
+            <div className="row">
+              {/* left column */}
+              <div className="col-md-12">
+                <div className="box">
+                  <div className="box-header" style={{ marginTop: "5px" }}>
+                    <div style={{ paddingLeft: "5px" }} className="col-md-8">
+                      <h3 className="box-title">Data Table With Full Features</h3>
+                    </div>
 
-                  <div className="col-md-4">
-                    <PaySlipModal />
+                    <div className="col-md-4">
+                      <PaySlipModal />
+                    </div>
                   </div>
-                </div>
-                {/* /.box-header */}
-                <div className="box-body">
-                  <div
-                    id="example1_wrapper"
-                    className="dataTables_wrapper form-inline dt-bootstrap"
-                  >
-                    <div className="row">
-                      <div>
-                        <div className="col-sm-6">
-                          <div
-                            className="dataTables_length"
-                            id="example1_length"
-                          >
-                            <label>
-                              Show
+                  {/* /.box-header */}
+                  <div className="box-body">
+                    <div
+                      id="example1_wrapper"
+                      className="dataTables_wrapper form-inline dt-bootstrap"
+                    >
+                      <div className="row">
+                        <div>
+                          <div className="col-sm-6">
+                            <div
+                              className="dataTables_length"
+                              id="example1_length"
+                            >
+                              <label>
+                                Show
                               <select
-                                onChange={this.handleOnChange}
-                                name="select"
-                                aria-controls="example1"
-                                style={{ margin: "0px 5px" }}
-                                className="form-control input-sm"
-                                value={this.state.select}
-                              >
-                                {this.state.sort.map(option => (
-                                  <option
-                                    key={option.value}
-                                    value={option.value}
-                                  >
-                                    {option.value}
-                                  </option>
-                                ))}
-                              </select>
-                              entries
+                                  onChange={this.handleOnChange}
+                                  name="select"
+                                  aria-controls="example1"
+                                  style={{ margin: "0px 5px" }}
+                                  className="form-control input-sm"
+                                  value={this.state.select}
+                                >
+                                  {this.state.sort.map(option => (
+                                    <option
+                                      key={option.value}
+                                      value={option.value}
+                                    >
+                                      {option.value}
+                                    </option>
+                                  ))}
+                                </select>
+                                entries
                             </label>
+                            </div>
                           </div>
-                        </div>
-                        <div className="col-sm-6">
-                          <div
-                            id="example1_filter"
-                            className="dataTables_filter"
-                          >
-                            <label style={{ float: "right" }}>
-                              Search:
+                          <div className="col-sm-6">
+                            <div
+                              id="example1_filter"
+                              className="dataTables_filter"
+                            >
+                              <label style={{ float: "right" }}>
+                                Search:
                               <input
-                                type="search"
-                                name="query"
-                                style={{ margin: "0px 5px" }}
-                                className="form-control input-sm"
-                                placeholder="Find me  "
-                                aria-controls="example1"
-                                onChange={this.handleOnChange}
-                                value={this.state.query}
-                              />
-                            </label>
+                                  type="search"
+                                  name="query"
+                                  style={{ margin: "0px 5px" }}
+                                  className="form-control input-sm"
+                                  placeholder="Find me  "
+                                  aria-controls="example1"
+                                  onChange={this.handleOnChange}
+                                  value={this.state.query}
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row">
+                        <div className="col-sm-12">
+                          <table
+                            id="example1"
+                            className="table table-bordered table-striped"
+                          >
+                            <thead>
+                              <tr>
+                                <th style={{ width: "10%" }}>#</th>
+                                <th style={{ width: "20%" }}>Member</th>
+                                <th style={{ width: "20%" }}>Supplier</th>
+                                <th style={{ width: "20%" }}>Created Date</th>
+                                <th style={{ width: "30%" }}>Total Amount</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {payslips.map((eachPaySlip, index) => (
+                                <PaySlipRow
+                                  onHandler={this.handler}
+                                  resetState={this.resetState}
+                                  history={this.props.history}
+                                  key={eachPaySlip._id}
+                                  PaySlip={eachPaySlip}
+                                  index={index}
+                                />
+
+                              ))}
+                            </tbody>
+                            <tfoot>
+                              <tr>
+                                <th>#</th>
+                                <th>Member</th>
+                                <th>Supplier</th>
+                                <th>Created Date</th>
+                                <th>Total Amount</th>
+                              </tr>
+                            </tfoot>
+                          </table>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-sm-5">
+                          <div
+                            className="dataTables_info"
+                            id="example1_info"
+                            role="status"
+                            aria-live="polite"
+                          >
+                            Showing 1 to {select} of {totalDocuments} entries
+                        </div>
+                        </div>
+                        <div className="col-sm-7">
+                          <div
+                            className="dataTables_paginate paging_simple_numbers"
+                            id="example1_paginate"
+                          >
+                            <ul className="pagination" style={{ float: "right" }}>
+                              <li
+                                className="paginate_button previous disabled"
+                                id="example1_previous"
+                              >
+                                <a
+                                  href="fake_url"
+                                  aria-controls="example1"
+                                  data-dt-idx={0}
+                                  tabIndex={0}
+                                >
+                                  Previous
+                              </a>
+                              </li>
+                              {this.renderPageButtons()}
+                              <li
+                                className="paginate_button next disabled"
+                                id="example1_next"
+                              >
+                                <a
+                                  href="fake_url"
+                                  aria-controls="example2"
+                                  data-dt-idx={this.state.pages.length + 1}
+                                  tabIndex={0}
+                                >
+                                  Next
+                              </a>
+                              </li>
+                            </ul>
                           </div>
                         </div>
                       </div>
                     </div>
-
-                    <div className="row">
-                      <div className="col-sm-12">
-                        <table
-                          id="example1"
-                          className="table table-bordered table-striped"
-                        >
-                          <thead>
-                            <tr>
-                              <th style={{ width: "10%" }}>#</th>
-                              <th style={{ width: "20%" }}>Member</th>
-                              <th style={{ width: "20%" }}>Supplier</th>
-                              <th style={{ width: "20%" }}>Created Date</th>
-                              <th style={{ width: "30%" }}>Total Amount</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {payslips.map((eachPaySlip, index) => (
-                              <PaySlipRow
-                                onHandler={this.handler}
-                                resetState={this.resetState}
-                                history={this.props.history}
-                                key={eachPaySlip._id}
-                                PaySlip={eachPaySlip}
-                                index={index}
-                              />
-
-                            ))}
-                          </tbody>
-                          <tfoot>
-                            <tr>
-                              <th>#</th>
-                              <th>Member</th>
-                              <th>Supplier</th>
-                              <th>Created Date</th>
-                              <th>Total Amount</th>
-                            </tr>
-                          </tfoot>
-                        </table>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-sm-5">
-                        <div
-                          className="dataTables_info"
-                          id="example1_info"
-                          role="status"
-                          aria-live="polite"
-                        >
-                          Showing 1 to {select} of {totalDocuments} entries
-                        </div>
-                      </div>
-                      <div className="col-sm-7">
-                        <div
-                          className="dataTables_paginate paging_simple_numbers"
-                          id="example1_paginate"
-                        >
-                          <ul className="pagination" style={{ float: "right" }}>
-                            <li
-                              className="paginate_button previous disabled"
-                              id="example1_previous"
-                            >
-                              <a
-                                href="fake_url"
-                                aria-controls="example1"
-                                data-dt-idx={0}
-                                tabIndex={0}
-                              >
-                                Previous
-                              </a>
-                            </li>
-                            {this.renderPageButtons()}
-                            <li
-                              className="paginate_button next disabled"
-                              id="example1_next"
-                            >
-                              <a
-                                href="fake_url"
-                                aria-controls="example2"
-                                data-dt-idx={this.state.pages.length + 1}
-                                tabIndex={0}
-                              >
-                                Next
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
+                    {/*/.col (left) */}
                   </div>
-                  {/*/.col (left) */}
+                  {/* /.row */}
                 </div>
-                {/* /.row */}
               </div>
             </div>
-          </div>
-        </section>
-        {/* /.content */}
-      </React.Fragment>
+          </section>
+          {/* /.content */}
+        </React.Fragment>)}
+      </Fragment>
     );
   }
 }
@@ -320,7 +326,8 @@ PaySlip.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  payslip: state.payslip
+  payslip: state.payslip,
+  isLoaded: state.payslip.isLoaded
 });
 
 export default connect(

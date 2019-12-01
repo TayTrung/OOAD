@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Menu from "./components/Menu";
+import PaySlip from "./components/Content/PaySLip/PaySlip";
+import PaySlipEdit from "./components/Content/PaySlip/PaySlipEdit";
 import Category from "./components/Content/Category/Category";
 import CategoryEdit from "./components/Content/Category/CategoryEdit";
 import Member from "./components/Content/Member/Member";
@@ -60,6 +62,12 @@ export default class App extends Component {
               exact
               path="/invoice/edit/:id"
               component={InvoiceEdit}>
+            </Route>
+            <Route exact path="/payslip" component={PaySlip}></Route>
+            <Route
+              exact
+              path="/payslip/edit/:id"
+              component={PaySlipEdit}>
             </Route>
             <Route exact path="/404" component={ErrorPage}></Route>
           </div>

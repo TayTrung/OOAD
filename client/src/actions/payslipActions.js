@@ -34,7 +34,8 @@ export const addPaySlip = newPaySlip => dispatch => {
   axios.post("/api/payslip/", newPaySlip).then(response => {
     dispatch({
       type: ADD_PAYSLIP,
-      payload: newPaySlip
+      payload: newPaySlip,
+      response: response.status
     });
   });
 };

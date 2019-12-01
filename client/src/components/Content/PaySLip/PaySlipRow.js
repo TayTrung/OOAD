@@ -25,22 +25,9 @@ class CategoryRow extends Component {
     return year + "-" + month + "-" + dt;
   };
   handleEdit = id => {
-    this.props.history.push(`/category/edit/${id}`);
+    this.props.history.push(`/payslip/edit/${id}`);
   };
   handleDelete = id => {
-    // console.log(id);
-    // this.setState(prevState => {
-    //   let newState = { ...prevState }
-    //   let { categories } = newState
-
-    //   categories = categories.filter(c => c.id !== id)
-
-    //   return {
-    //     ...newState,
-    //     categories
-    //   }
-    // })
-    this.props.resetState();
     this.props.deleteCategory(id);
   };
 

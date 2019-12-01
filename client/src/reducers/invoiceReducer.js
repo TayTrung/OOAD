@@ -2,13 +2,14 @@ import {
   GET_INVOICES,
   ADD_INVOICE,
   DELETE_INVOICE,
-  GET_INVOICE,
   INVOICES_LOADING
 } from "../actions/types";
 
 const initialState = {
   invoices: [],
-  loading: false
+  isLoaded: false,
+  type: null,
+  response: null,
 };
 
 export default function (state = initialState, action) {
@@ -17,7 +18,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         invoices: action.payload,
-        loading: false
+        isLoaded: true,
+        type: action.type,
       };
     case DELETE_INVOICE:
       return {
@@ -29,12 +31,14 @@ export default function (state = initialState, action) {
     case ADD_INVOICE:
       return {
         ...state,
-        invoices: [action.payload, ...state.invoices]
+        invoices: [action.payload, ...state.invoices],
+        type: action.type,
+        response: action.response,
       };
     case INVOICES_LOADING:
       return {
         ...state,
-        loading: true
+        isLoaded: true
       };
     default:
       return state;

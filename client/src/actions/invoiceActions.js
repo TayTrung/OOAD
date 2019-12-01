@@ -34,7 +34,8 @@ export const addInvoice = newInvoice => dispatch => {
   axios.post("/api/invoice/", newInvoice).then(response => {
     dispatch({
       type: ADD_INVOICE,
-      payload: newInvoice
+      payload: newInvoice,
+      response: response.status,
     });
   });
 };
