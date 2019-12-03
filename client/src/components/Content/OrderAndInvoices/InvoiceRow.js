@@ -52,7 +52,6 @@ class InvoiceRow extends Component {
         <td>{Invoice.idMember}</td>
         <td>{Invoice.idUser}</td>
         <td>{Invoice.totalAmt}</td>
-        <td>{this.convertDate(Invoice.createddate)}</td>
         <td>{Invoice.comments}</td>
         <td>
           <div className="btn-group">
@@ -62,14 +61,6 @@ class InvoiceRow extends Component {
               className="btn btn-success"
             >
               Edit
-            </button>
-
-            <button
-              onClick={() => this.handleDelete(Invoice._id)}
-              type="button"
-              className="btn btn-danger"
-            >
-              Delete
             </button>
           </div>
         </td>

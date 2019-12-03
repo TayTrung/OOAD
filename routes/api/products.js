@@ -64,6 +64,7 @@ router.get("/count/:query", (req, res) => {
 
 router.post("/", (req, res) => {
   const newProduct = new Product({
+    _id: req.body._id,
     idCategory: req.body.idCategory,
     name: req.body.name,
     price: req.body.price,

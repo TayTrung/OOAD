@@ -26,9 +26,7 @@ class PaySlip extends Component {
   componentDidMount() {
     const { select, currentPage, query } = this.state;
     this.getTotalDocuments();
-
     this.getPages();
-
     this.props.getPaySlips(select, currentPage, query);
   }
 
@@ -43,7 +41,6 @@ class PaySlip extends Component {
       .get(`/api/payslip/count/${newQuery}`)
       .then(response => {
         this.setState({ totalDocuments: response.data });
-        console.log(response.data);
       })
       .catch(er => {
         console.log(er.response);
@@ -52,7 +49,6 @@ class PaySlip extends Component {
 
   getPages = () => {
     const { select, query } = this.state;
-    console.log(query);
     let newQuery = "";
     if (query === "") newQuery = "undefined";
     else newQuery = query;
@@ -225,11 +221,11 @@ class PaySlip extends Component {
                           >
                             <thead>
                               <tr>
-                                <th style={{ width: "10%" }}>#</th>
+                                <th style={{ width: "5%" }}>#</th>
                                 <th style={{ width: "20%" }}>Member</th>
                                 <th style={{ width: "20%" }}>Supplier</th>
                                 <th style={{ width: "20%" }}>Created Date</th>
-                                <th style={{ width: "30%" }}>Total Amount</th>
+                                <th style={{ width: "15%" }}>Total Amount</th>
                               </tr>
                             </thead>
                             <tbody>

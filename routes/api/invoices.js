@@ -64,6 +64,7 @@ router.get("/count/:query", (req, res) => {
 
 router.post("/", (req, res) => {
   const newInvoice = new Invoice({
+    _id: req.body._id,
     idMember: req.body.idMember,
     idUser: req.body.idUser,
     totalAmt: req.body.totalAmt,
@@ -79,7 +80,7 @@ router.post("/", (req, res) => {
 
 
 router.delete("/:id", (req, res) => {
-  //console.log(req.params.id);
+
   Invoice.findByIdAndDelete(req.params.id)
     .then(item => res.json(item)) //Return lại item đã xóa
     .catch(err => res.json(err)); //Catch lỗi rồi return ra

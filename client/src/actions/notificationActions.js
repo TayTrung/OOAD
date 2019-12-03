@@ -10,10 +10,10 @@ import { NotificationContainer, NotificationManager } from 'react-notifications'
 export const showNoti = type => dispatch => {
   switch (type) {
     case 'failure':
-      NotificationManager.error('Sorry, your ');
+      NotificationManager.error('Sorry, your data could not be saved!');
       break;
     case 'success':
-      NotificationManager.success('Your data has been updated successfully', 'Success', 1500, {}, true);
+      NotificationManager.success('Your data has been updated successfully', 'Success', 2000, {}, true);
       break;
     case 'warning-order':
       NotificationManager.warning('You have not ordered yet!', 'Warning', 1500, {}, true);

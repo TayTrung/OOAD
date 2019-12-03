@@ -20,6 +20,7 @@ export default function (state = initialState, action) {
         ...state,
         payslips: action.payload,
         isLoaded: true,
+        type: action.type,
       };
     case DELETE_PAYSLIP:
       return {

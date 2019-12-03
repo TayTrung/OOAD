@@ -5,12 +5,7 @@ import { addInvoice } from "../../../actions/invoiceActions";
 import { showNoti } from "../../../actions/notificationActions";
 import 'react-notifications/lib/notifications.css';
 import { NotificationContainer, NotificationManager } from 'react-notifications';
-import Notification from "../../Notification";
 import PropTypes from "prop-types";
-
-
-import Loader from "react-loader";
-
 
 const mongoose = require("mongoose");
 
@@ -55,7 +50,7 @@ class MemberModal extends Component {
     if (!isPassed && name === 'phone') {
       msg = "Phone can only contain numbers and spaces";
     }
-    this.setState({ [name]: value, msg });
+    this.setState({ [name]: value, msg: msg });
   };
 
   validatePhone = phone => {

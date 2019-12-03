@@ -2,11 +2,11 @@ import {
   GET_PAYSLIPS,
   ADD_PAYSLIP,
   DELETE_PAYSLIP,
-  GET_PAYSLIP,
   PAYSLIPS_LOADING
 } from "./types";
 import axios from "axios";
 import { log } from "util";
+const mongoose = require("mongoose");
 
 export const getPaySlips = (show = 5, page = 1, query) => dispatch => {
   let newQuery = "";
@@ -31,7 +31,13 @@ export const deletePaySlip = id => dispatch => {
 };
 
 export const addPaySlip = newPaySlip => dispatch => {
+
   axios.post("/api/payslip/", newPaySlip).then(response => {
+
+    if (newPaySlip._id instanceof mongoose.Types.ObjectId) {
+      newPaySlip._id = newPaySlip._id.toString();
+    }
+
     dispatch({
       type: ADD_PAYSLIP,
       payload: newPaySlip,

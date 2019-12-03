@@ -16,7 +16,13 @@ class PaySlipEdit extends Component {
       .then(response => {
         if (response.data === null) this.props.history.push("/404");
         else
-          this.setState({ name: response.data.name, _id: response.data._id });
+          this.setState({
+            idMember: response.data.idMember,
+            idSupplier: response.data.idSupplier,
+            createddate: response.data.createddate,
+            totalAmt: response.data.totalAmt,
+            _id: response.data._id
+          });
       })
       .catch(error => {
         console.log(error.response);
@@ -26,11 +32,14 @@ class PaySlipEdit extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
   handleSubmit = e => {
-    const { _id, name } = this.state;
+    const { _id, idMember, idSupplier, createddate, totalAmt } = this.state;
     e.preventDefault();
 
     const newPaySlip = {
-      name,
+      idMember,
+      idSupplier,
+      createddate,
+      totalAmt,
       _id
     };
 
@@ -51,7 +60,7 @@ class PaySlipEdit extends Component {
     this.props.history.push("/payslip");
   };
   render() {
-    const { name, _id } = this.state;
+    const { _id, idMember, idSupplier, createddate, totalAmt } = this.state;
 
     return (
       <Fragment>
@@ -89,6 +98,25 @@ class PaySlipEdit extends Component {
                   <div className="box-body">
                     <div className="form-group">
                       <label
+                        htmlFor="inputPassword3"
+                        className="col-sm-2 control-label"
+                      >
+                        ID
+                      </label>
+                      <div className="col-sm-10">
+                        <input
+                          name="_id"
+                          type="text"
+                          className="form-control"
+                          id="inputId"
+                          placeholder="Loading..."
+                          defaultValue={_id}
+                          onChange={this.handleChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label
                         htmlFor="inputEmail3"
                         className="col-sm-2 control-label"
                       >
@@ -96,7 +124,7 @@ class PaySlipEdit extends Component {
                       </label>
                       <div className="col-sm-10">
                         <input
-                          name="member"
+                          name="idMember"
                           type="text"
                           id="inputMember"
                           placeholder="Loading..."
@@ -107,6 +135,7 @@ class PaySlipEdit extends Component {
                         />
                       </div>
                     </div>
+
                     <div className="form-group">
                       <label
                         htmlFor="inputPassword3"
@@ -116,7 +145,7 @@ class PaySlipEdit extends Component {
                       </label>
                       <div className="col-sm-10">
                         <input
-                          name="supplier"
+                          name="idSupplier"
                           type="text"
                           className="form-control"
                           id="inputSupplier"
@@ -126,25 +155,7 @@ class PaySlipEdit extends Component {
                         />
                       </div>
                     </div>
-                    <div className="form-group">
-                      <label
-                        htmlFor="inputCreateddate"
-                        className="col-sm-2 control-label"
-                      >
-                        Created Date
-                      </label>
-                      <div className="col-sm-10">
-                        <input
-                          name="createddate"
-                          type="text"
-                          className="form-control"
-                          id="inputCreateddate"
-                          placeholder="Loading..."
-                          defaultValue={createddate}
-                          onChange={this.handleChange}
-                        />
-                      </div>
-                    </div>
+
                     <div className="form-group">
                       <label
                         htmlFor="inputCreateddate"
@@ -154,7 +165,7 @@ class PaySlipEdit extends Component {
                       </label>
                       <div className="col-sm-10">
                         <input
-                          name="totalamt"
+                          name="totalAmt"
                           type="text"
                           className="form-control"
                           id="inputTotalAmt"

@@ -47,6 +47,7 @@ export const deleteMember = id => dispatch => {
 };
 
 export const addMember = newMember => dispatch => {
+  console.log(newMember._id);
   axios.post("/api/member/", newMember).then(response => {
 
     if (newMember._id instanceof mongoose.Types.ObjectId) {

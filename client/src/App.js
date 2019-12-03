@@ -3,7 +3,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Menu from "./components/Menu";
 import PaySlip from "./components/Content/PaySLip/PaySlip";
-import PaySlipEdit from "./components/Content/PaySlip/PaySlipEdit";
+import PaySlipEdit from "./components/Content/PaySLip/PaySlipEdit";
 import Category from "./components/Content/Category/Category";
 import CategoryEdit from "./components/Content/Category/CategoryEdit";
 import Member from "./components/Content/Member/Member";

@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-
 import { connect } from "react-redux";
-import { deleteCategory } from "../../../actions/categoryActions";
+import { deletePaySlip } from "../../../actions/payslipActions";
 
 const mapStateToProps = state => ({
-  category: state.category
+  payslip: state.payslip
 });
 
-class CategoryRow extends Component {
+class PaySlipRow extends Component {
 
   convertDate = date => {
     const newDate = new Date(date);
@@ -18,9 +17,6 @@ class CategoryRow extends Component {
     dt = dt < 10 ? `0${dt}` : dt;
 
     month = month < 10 ? `0${month}` : month;
-    // if (month < 10) {
-    //   month = "0" + month;
-    // }
 
     return year + "-" + month + "-" + dt;
   };
@@ -28,22 +24,23 @@ class CategoryRow extends Component {
     this.props.history.push(`/payslip/edit/${id}`);
   };
   handleDelete = id => {
-    this.props.deleteCategory(id);
+    this.props.deletePaySlip(id);
   };
 
   render() {
-    const { Category, index } = this.props;
+    const { PaySlip, index } = this.props;
 
     return (
       <tr>
         <td>{index + 1}</td>
-        <td>{Category.name}</td>
-        <td>{this.convertDate(Category.createAt)}</td>
-        <td>Uknown</td>
+        <td>{PaySlip.idMember}</td>
+        <td>{PaySlip.idSupplier}</td>
+        <td>{this.convertDate(PaySlip.createddate)}</td>
+        <td>{PaySlip.totalAmt}</td>
         <td>
           <div className="btn-group">
             <button
-              onClick={() => this.handleEdit(Category._id)}
+              onClick={() => this.handleEdit(PaySlip._id)}
               type="button"
               className="btn btn-success"
             >
@@ -51,7 +48,7 @@ class CategoryRow extends Component {
             </button>
 
             <button
-              onClick={() => this.handleDelete(Category._id)}
+              onClick={() => this.handleDelete(PaySlip._id)}
               type="button"
               className="btn btn-danger"
             >
@@ -66,5 +63,5 @@ class CategoryRow extends Component {
 
 export default connect(
   mapStateToProps,
-  { deleteCategory }
-)(CategoryRow);
+  { deletePaySlip }
+)(PaySlipRow);

@@ -4,18 +4,6 @@ const router = express.Router();
 //PaySlip Model
 const PaySlip = require("../../models/PaySlip");
 
-//search theo query, them duong dan /api/payslip/search/ trong file server
-router.get("/search/:query", (req, res) => {
-  const { query } = req.params;
-  if (query === "undefined") newQuery = "";
-  else newQuery = query;
-
-  PaySlip.find({ idSupplier: { $regex: newQuery, $options: "i" } })
-    .sort({ createddate: -1 }) //desc = -1 acs = 1
-    .then(payslip => res.json(payslip)) //return lại item 
-    .catch(err => res.json(err)); //Catch lỗi rồi return ra;
-});
-
 router.get("/:id", (req, res) => {
   PaySlip.findById(req.params.id)
     .then(payslip => {
@@ -33,7 +21,6 @@ router.get('', (req, res) => {
 });
 
 router.put("/:id", (req, res) => {
-  console.log(req.body);
 
   const newPaySlip = {
     idMember: req.body.idMember,
@@ -56,7 +43,7 @@ router.get("/:objects/:page/:query", (req, res) => {
   if (query === "undefined") newQuery = "";
   else newQuery = query;
 
-  PaySlip.find({ name: { $regex: newQuery, $options: "i" } })
+  PaySlip.find({ idMember: { $regex: newQuery, $options: "i" } })
     .limit(Number(objects))
     .skip(objects * (page - 1))
     .sort({ createddate: -1 }) //desc = -1 acs = 1
@@ -71,7 +58,7 @@ router.get("/count/:query", (req, res) => {
   if (query === "undefined") newQuery = "";
   else newQuery = query;
 
-  PaySlip.find({ name: { $regex: newQuery, $options: "i" } })
+  PaySlip.find({ idMember: { $regex: newQuery, $options: "i" } })
     .countDocuments()
     .sort({ createddate: -1 }) //desc = -1 acs = 1
     .then(counter => res.json(counter)) //return lại item
@@ -80,6 +67,7 @@ router.get("/count/:query", (req, res) => {
 
 router.post("/", (req, res) => {
   const newPaySlip = new PaySlip({
+    _id: req.body._id,
     idMember: req.body.idMember,
     idSupplier: req.body.idSupplier,
     createddate: req.body.createddate,

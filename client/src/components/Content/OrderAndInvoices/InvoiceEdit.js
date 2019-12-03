@@ -128,13 +128,14 @@ class InvoiceEdit extends Component {
                       </label>
                       <div className="col-sm-10">
                         <input
-                          name="member"
+                          name="idMember"
                           type="text"
                           className="form-control"
                           id="inputMember"
                           placeholder="Loaiding..."
                           defaultValue={idMember}
                           onChange={this.handleChange}
+                          disabled
                         />
                       </div>
                     </div>
@@ -147,13 +148,14 @@ class InvoiceEdit extends Component {
                       </label>
                       <div className="col-sm-10">
                         <input
-                          name="user"
+                          name="idUser"
                           type="text"
                           className="form-control"
                           id="inputUser"
                           placeholder="Loading..."
                           defaultValue={idUser}
                           onChange={this.handleChange}
+                          disabled
                         />
                       </div>
                     </div>
@@ -166,35 +168,18 @@ class InvoiceEdit extends Component {
                       </label>
                       <div className="col-sm-10">
                         <input
-                          name="totalamt"
+                          name="totalAmt"
                           type="text"
                           className="form-control"
                           id="inputTotalAmt"
                           placeholder="Loading..."
                           defaultValue={totalAmt}
                           onChange={this.handleChange}
+                          disabled
                         />
                       </div>
                     </div>
-                    <div className="form-group">
-                      <label
-                        htmlFor="inputPassword3"
-                        className="col-sm-2 control-label"
-                      >
-                        Created Date
-                      </label>
-                      <div className="col-sm-10">
-                        <input
-                          name="createddate"
-                          type="text"
-                          className="form-control"
-                          id="inputCreateddate"
-                          placeholder="Loading..."
-                          defaultValue={createddate}
-                          onChange={this.handleChange}
-                        />
-                      </div>
-                    </div>
+
                     <div className="form-group">
                       <label
                         htmlFor="inputPassword3"
