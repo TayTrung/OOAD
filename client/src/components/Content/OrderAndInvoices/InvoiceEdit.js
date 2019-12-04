@@ -61,8 +61,8 @@ class InvoiceEdit extends Component {
           this.setState({ notiType: 'success' });
 
           setTimeout(function () { //Start the timer
-            this.props.history.push("/invoice"); //After 2 seconds, back to /member
-          }.bind(this), 1200)
+            window.location.replace("/invoice");
+          }.bind(this), 500)
         }
         console.log(response.data);
       })

@@ -56,12 +56,14 @@ class OrderScreen extends Component {
 
       if (invoice.type === 'ADD_INVOICE') {
         if (invoice.response === 200) {
+          alert('af');
           this.setState({ notiType: 'success' });
-          //window.location.reload();
+          window.location.reload();
         } else {
+          alert('fali');
           this.setState({ notiType: 'failure' });
         }
-      }
+      } else { return; }
 
     }
   }
@@ -224,17 +226,7 @@ class OrderScreen extends Component {
     this.getTotalDocuments();
     this.getPages();
     this.props.getProducts(select, currentPage, query);
-    //this.props.getMembers(select, currentPage, query);
     this.props.getSearchMembers('');
-    // axios
-    //   .get(`/api/member/${''}`)
-    //   .then(response => {
-    //     this.setState({ listUser: response.data });
-
-    //   })
-    //   .catch(error => {
-    //     console.log(error.response);
-    //   });
 
   }
   getTotalDocuments = () => {
@@ -353,7 +345,6 @@ class OrderScreen extends Component {
   createNotification = () => {
     this.props.showNoti(this.state.notiType);
     this.setState({ notiType: '' });
-
   };
 
   render() {
@@ -361,7 +352,7 @@ class OrderScreen extends Component {
     const { members } = this.props.member;
     const { isLoaded } = this.props;
     const { invisibleInpUserVal, invisibleInpMemVal, listOrder, listSelectMember, total } = this.state;
-
+    //alert(this.state.notiType);
     return (
       <Fragment>
         {!isLoaded ? (
@@ -372,6 +363,7 @@ class OrderScreen extends Component {
                 this.createNotification()
               ) : null}
               <NotificationContainer />
+
               {/* Content Header (Page header) */}
               <section className="content-header">
                 <h1>
@@ -445,6 +437,7 @@ class OrderScreen extends Component {
                             style={{ opacity: 0, height: 0 }}
                             required
                             value={invisibleInpUserVal}
+                            onChange={this.onChange}
                           />
                           <br />
                           <strong><i className="fa fa-phone margin-r-5"></i> Customer phone</strong>
@@ -548,7 +541,7 @@ class OrderScreen extends Component {
                                 </div>
                               </div>
 
-                              <div className="row">
+                              {/* <div className="row">
                                 <div className="col-sm-12">
                                   <table
                                     id="example1"
@@ -578,7 +571,7 @@ class OrderScreen extends Component {
 
                                   </table>
                                 </div>
-                              </div>
+                              </div> */}
 
                             </div>
                             {/*/.col (left) */}

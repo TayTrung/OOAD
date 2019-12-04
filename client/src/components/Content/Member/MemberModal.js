@@ -20,6 +20,9 @@ class MemberModal extends Component {
     notiType: "",
   };
 
+  componentDidMount() {
+    this.setState({ name: '', phone: '', point: '', _id: '' });
+  }
   componentDidUpdate(prevProps, prevState, snapshot) {
 
     if (prevProps.member.members !== this.props.member.members) {
@@ -66,7 +69,9 @@ class MemberModal extends Component {
       createAt: new Date(),
       _id: mongoose.Types.ObjectId(),
     };
+
     this.props.addMember(newItem);
+
 
     // Close modal
     document.getElementById("triggerButton").click();

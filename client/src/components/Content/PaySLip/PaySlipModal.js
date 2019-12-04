@@ -43,7 +43,6 @@ class PaySlipModal extends Component {
       if (this.props.payslip.response === 200) {
         this.setState({ notiType: 'success' });
       } else {
-        alert('af');
         this.setState({ notiType: 'failure' });
       }
     }

@@ -64,8 +64,8 @@ class PaySlipEdit extends Component {
           this.setState({ notiType: 'success' });
 
           setTimeout(function () { //Start the timer
-            this.props.history.push("/payslip"); //After 2 seconds, back to /member
-          }.bind(this), 1300)
+            window.location.replace("/payslip");
+          }.bind(this), 500)
         }
 
         console.log(response.data);

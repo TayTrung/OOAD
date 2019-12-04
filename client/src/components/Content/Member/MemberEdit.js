@@ -75,12 +75,11 @@ class MemberEdit extends Component {
 
       .then(response => {
         if (response.status === 200) {
-          alert(this.state.notiType);
           this.setState({ notiType: 'success' });
 
           setTimeout(function () { //Start the timer
-            this.props.history.push("/member"); //After 2 seconds, back to /member
-          }.bind(this), 1300)
+            window.location.replace("/member");
+          }.bind(this), 500)
 
         }
         console.log(response.data);
