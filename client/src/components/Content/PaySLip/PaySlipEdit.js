@@ -1,5 +1,9 @@
 import React, { Fragment, Component } from "react";
 import axios from "axios";
+import { connect } from "react-redux";
+import { showNoti } from "../../../actions/notificationActions";
+import 'react-notifications/lib/notifications.css';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 
 class PaySlipEdit extends Component {
   state = {
@@ -7,8 +11,16 @@ class PaySlipEdit extends Component {
     idSupplier: "",
     createddate: new Date(),
     totalAmt: 0,
-    _id: ""
+    _id: "",
+    notiType: "",
   };
+
+  createNotification = () => {
+    const { notiType } = this.state;
+    this.props.showNoti(notiType);
+    this.setState({ notiType: '' });
+  };
+
   componentDidMount() {
     const { id } = this.props.match.params;
     axios
@@ -34,7 +46,7 @@ class PaySlipEdit extends Component {
   handleSubmit = e => {
     const { _id, idMember, idSupplier, createddate, totalAmt } = this.state;
     e.preventDefault();
-
+    let notiType = '';
     const newPaySlip = {
       idMember,
       idSupplier,
@@ -47,13 +59,22 @@ class PaySlipEdit extends Component {
       .put(`/api/payslip/${_id}`, newPaySlip)
 
       .then(response => {
+
+        if (response.status === 200) {
+          this.setState({ notiType: 'success' });
+
+          setTimeout(function () { //Start the timer
+            this.props.history.push("/payslip"); //After 2 seconds, back to /member
+          }.bind(this), 1300)
+        }
+
         console.log(response.data);
       })
       .catch(error => {
+        this.setState({ notiType: 'failure' });
         console.log(error.response);
       });
-    //Quay về trang chính
-    this.props.history.push("/payslip");
+
   };
 
   handleCancel = e => {
@@ -64,6 +85,11 @@ class PaySlipEdit extends Component {
 
     return (
       <Fragment>
+        {this.state.notiType !== "" ? (
+          this.createNotification()
+        ) : null}
+        <NotificationContainer />
+
         {/* Content Header (Page header) */}
         <section className="content-header">
           <h1>
@@ -172,6 +198,7 @@ class PaySlipEdit extends Component {
                           placeholder="Loading..."
                           defaultValue={totalAmt}
                           onChange={this.handleChange}
+                          disabled
                         />
                       </div>
                     </div>
@@ -200,4 +227,8 @@ class PaySlipEdit extends Component {
   }
 }
 
-export default PaySlipEdit;
+const mapStateToProps = state => ({
+});
+export default connect(
+  mapStateToProps, { showNoti }
+)(PaySlipEdit);

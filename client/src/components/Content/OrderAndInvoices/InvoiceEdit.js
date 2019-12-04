@@ -1,5 +1,9 @@
 import React, { Fragment, Component } from "react";
 import axios from "axios";
+import { connect } from "react-redux";
+import { showNoti } from "../../../actions/notificationActions";
+import 'react-notifications/lib/notifications.css';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 
 class InvoiceEdit extends Component {
   state = {
@@ -8,8 +12,10 @@ class InvoiceEdit extends Component {
     totalAmt: 0,
     createddate: new Date(),
     comments: "",
-    _id: ""
+    _id: "",
+    notiType: "",
   };
+
   componentDidMount() {
     const { id } = this.props.match.params;
     axios
@@ -33,6 +39,7 @@ class InvoiceEdit extends Component {
   handleChange = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
+
   handleSubmit = e => {
     const { _id, idMember, idUser, totalAmt, createddate, comments } = this.state;
     e.preventDefault();
@@ -50,23 +57,42 @@ class InvoiceEdit extends Component {
       .put(`/api/invoice/${_id}`, newInvoice)
 
       .then(response => {
+        if (response.status === 200) {
+          this.setState({ notiType: 'success' });
+
+          setTimeout(function () { //Start the timer
+            this.props.history.push("/invoice"); //After 2 seconds, back to /member
+          }.bind(this), 1200)
+        }
         console.log(response.data);
       })
       .catch(error => {
+        this.setState({ notiType: 'failure' });
         console.log(error.response);
       });
-    //Quay về trang chính
-    this.props.history.push("/invoice");
   };
 
   handleCancel = e => {
     this.props.history.push("/invoice");
   };
+
+  createNotification = () => {
+    const { notiType } = this.state;
+    this.props.showNoti(notiType);
+    this.setState({ notiType: '' });
+
+  };
+
   render() {
     const { _id, idMember, idUser, totalAmt, createddate, comments } = this.state;
 
     return (
       <Fragment>
+        {this.state.notiType !== "" ? (
+          this.createNotification()
+        ) : null}
+        <NotificationContainer />
+
         {/* Content Header (Page header) */}
         <section className="content-header">
           <h1>
@@ -203,13 +229,14 @@ class InvoiceEdit extends Component {
                   {/* /.box-body */}
                   <div className="box-footer">
                     <button
+                      id="btncancel"
                       type="button"
                       onClick={this.handleCancel}
                       className="btn btn-default"
                     >
                       Cancel
                     </button>
-                    <button type="submit" className="btn btn-info pull-right">
+                    <button id="btnsave" type="submit" className="btn btn-info pull-right">
                       Save
                     </button>
                   </div>
@@ -224,4 +251,10 @@ class InvoiceEdit extends Component {
   }
 }
 
-export default InvoiceEdit;
+const mapStateToProps = state => ({
+});
+export default connect(
+  mapStateToProps, { showNoti }
+)(InvoiceEdit);
+
+

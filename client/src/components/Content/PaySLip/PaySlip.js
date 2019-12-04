@@ -6,6 +6,9 @@ import {
   getPaySlips,
   deletePaySlip
 } from "../../../actions/payslipActions";
+import { showNoti } from "../../../actions/notificationActions";
+import 'react-notifications/lib/notifications.css';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 import Loader from "react-loader";
 import PropTypes from "prop-types";
 import axios from "axios";
@@ -17,7 +20,8 @@ class PaySlip extends Component {
     currentPage: 1,
     pages: [],
     totalDocuments: 0,
-    query: ""
+    query: "",
+    notiType: "",
   };
 
   resetState = () => {
@@ -28,6 +32,11 @@ class PaySlip extends Component {
     this.getTotalDocuments();
     this.getPages();
     this.props.getPaySlips(select, currentPage, query);
+
+    if (!this.props.location.state) { return };
+    if (this.props.location.state !== '') {
+      this.setState({ notiType: this.props.location.state.notiType });
+    }
   }
 
   getTotalDocuments = () => {
@@ -113,15 +122,25 @@ class PaySlip extends Component {
     ));
   };
 
+  createNotification = () => {
+    this.props.showNoti(this.state.notiType);
+    this.setState({ notiType: '' });
+  };
+
   render() {
     const { payslips } = this.props.payslip;
     const { isLoaded } = this.props;
-    const { select, totalDocuments, pages } = this.state;
+    const { select, totalDocuments, pages, notiType } = this.state;
     return (
       <Fragment>
         {!isLoaded ? (
           <Loader></Loader>
         ) : (<React.Fragment>
+          {notiType !== '' ? (
+            this.createNotification()
+          ) : null}
+          <NotificationContainer />
+
           {/* Content Header (Page header) */}
           <section className="content-header">
             <h1>
@@ -328,5 +347,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getPaySlips, deletePaySlip }
+  { getPaySlips, deletePaySlip, showNoti }
 )(PaySlip);

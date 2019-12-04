@@ -16,7 +16,9 @@ export const showNoti = type => dispatch => {
       NotificationManager.success('Your data has been updated successfully', 'Success', 2000, {}, true);
       break;
     case 'warning-order':
-      NotificationManager.warning('You have not ordered yet!', 'Warning', 1500, {}, true);
+      NotificationManager.warning('You have not ordered yet!', 'Warning', 2000, {}, true);
+      break;
+    default:
       break;
   }
   dispatch({ type: SHOW_NOTI, payload: type })

@@ -17,12 +17,8 @@ class Member extends Component {
     currentPage: 1,
     pages: [],
     totalDocuments: 0,
-    query: ""
+    query: "",
   };
-
-  resetState = () => {
-    this.setState({ select: "5", currentPage: 1, query: "" })
-  }
 
   componentDidMount() {
     const { select, currentPage, query } = this.state;
@@ -31,7 +27,6 @@ class Member extends Component {
     this.getPages();
 
     this.props.getMembers(select, currentPage, query);
-
   }
 
   getTotalDocuments = () => {
@@ -86,6 +81,7 @@ class Member extends Component {
       this.getTotalDocuments();
     });
   };
+
   handleChoosePage = e => {
     this.setState({ currentPage: e }, () => {
       const { select, currentPage, query } = this.state;
@@ -128,7 +124,6 @@ class Member extends Component {
         {!isLoaded ? (
           <Loader></Loader>
         ) : (
-
             <React.Fragment>
               {/* Content Header (Page header) */}
               <section className="content-header">
@@ -241,7 +236,6 @@ class Member extends Component {
                                   {members.map((eachMember, index) => (
                                     <MemberRow
                                       onHandler={this.handler}
-                                      //resetState={this.resetState}
                                       history={this.props.history}
                                       key={eachMember._id}
                                       Member={eachMember}

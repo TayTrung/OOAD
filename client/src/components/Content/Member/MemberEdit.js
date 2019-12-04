@@ -1,4 +1,8 @@
 import React, { Fragment, Component } from "react";
+import { connect } from "react-redux";
+import { showNoti } from "../../../actions/notificationActions";
+import 'react-notifications/lib/notifications.css';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 import axios from "axios";
 
 class MemberEdit extends Component {
@@ -6,8 +10,17 @@ class MemberEdit extends Component {
     name: "",
     phone: "",
     point: 0,
-    _id: ""
+    _id: "",
+    msg: "",
+    notiType: "",
   };
+
+  createNotification = () => {
+    const { notiType } = this.state;
+    this.props.showNoti(notiType);
+    this.setState({ notiType: '' });
+  };
+
   componentDidMount() {
     const { id } = this.props.match.params;
     axios
@@ -28,8 +41,24 @@ class MemberEdit extends Component {
       });
   }
   handleChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
+    //this.setState({ [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    let msg = "";
+
+    //Validation
+    const isPassed = this.validatePhone(value);
+    //const inputErrors = isPassed ? false : true;
+
+    if (!isPassed && name === 'phone') {
+      msg = "Phone can only contain numbers and spaces";
+    }
+    this.setState({ [name]: value, msg: msg });
   };
+
+  validatePhone = phone => {
+    return new RegExp(/^[0-9 ]*$/).test(phone);
+  };
+
   handleSubmit = e => {
     const { _id, name, phone, point } = this.state;
     e.preventDefault();
@@ -45,14 +74,24 @@ class MemberEdit extends Component {
       .put(`/api/member/${_id}`, newMember)
 
       .then(response => {
+        if (response.status === 200) {
+          alert(this.state.notiType);
+          this.setState({ notiType: 'success' });
+
+          setTimeout(function () { //Start the timer
+            this.props.history.push("/member"); //After 2 seconds, back to /member
+          }.bind(this), 1300)
+
+        }
         console.log(response.data);
       })
       .catch(error => {
+        this.setState({ notiType: 'failure' });
         console.log(error.response);
       });
 
     //Quay về trang chính
-    this.props.history.push("/member");
+
   };
 
   handleCancel = e => {
@@ -63,6 +102,11 @@ class MemberEdit extends Component {
 
     return (
       <Fragment>
+        {this.state.notiType !== "" ? (
+          this.createNotification()
+        ) : null}
+        <NotificationContainer />
+
         {/* Content Header (Page header) */}
         <section className="content-header">
           <h1>
@@ -94,6 +138,11 @@ class MemberEdit extends Component {
                 {/* /.box-header */}
                 {/* form start */}
                 <form className="form-horizontal" onSubmit={this.handleSubmit}>
+                  {this.state.msg != '' ? (
+                    <div className="alert alert-danger alert-dismissible">
+                      {this.state.msg}
+                    </div>
+                  ) : null}
                   <div className="box-body">
                     <div className="form-group">
                       <label
@@ -169,6 +218,7 @@ class MemberEdit extends Component {
                           placeholder="Loading..."
                           defaultValue={point}
                           onChange={this.handleChange}
+                          disabled
                         />
                       </div>
                     </div>
@@ -197,4 +247,10 @@ class MemberEdit extends Component {
   }
 }
 
-export default MemberEdit;
+const mapStateToProps = state => ({
+
+});
+export default connect(
+  mapStateToProps, { showNoti }
+)(MemberEdit);
+

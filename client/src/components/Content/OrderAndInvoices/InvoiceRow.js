@@ -49,9 +49,10 @@ class InvoiceRow extends Component {
     return (
       <tr>
         <td>{index + 1}</td>
-        <td>{Invoice.idMember}</td>
         <td>{Invoice.idUser}</td>
+        <td>{Invoice.idMember}</td>
         <td>{Invoice.totalAmt}</td>
+        <td>{this.convertDate(Invoice.createddate)}</td>
         <td>{Invoice.comments}</td>
         <td>
           <div className="btn-group">
