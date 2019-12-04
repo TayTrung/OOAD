@@ -1,7 +1,7 @@
 export const GET_CATEGORIES = "GET_CATEGORIES";
+export const UPDATE_CATEGORY = "UPDATE_CATEGORY";
 export const ADD_CATEGORY = "ADD_CATEGORY";
 export const DELETE_CATEGORY = "DELETE_CATEGORY";
-export const GET_CATEGORY = "GET_CATEGORY";
 export const CATEGORIES_LOADING = "CATEGORIES_LOADING";
 
 export const GET_SUPPLIERS = "GET_SUPPLIERS";
@@ -15,3 +15,21 @@ export const ADD_USER = "ADD_USER";
 export const DELETE_USER = "DELETE_USER";
 export const GET_USER = "GET_USER";
 export const USERS_LOADING = "USERS_LOADING";
+export const USER_LOADING = "USER_LOADING";
+export const USER_LOADED = "USER_LOADED";
+export const AUTH_ERROR = "AUTH_ERROR";
+export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+export const LOGIN_FAIL = "LOGIN_FAIL";
+export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
+export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
+export const REGISTER_FAIL = "REGISTER_FAIL";
+export const GET_ERRORS = "GET_ERRORS";
+export const CLEAR_ERRORS = "CLEAR_ERRORS";
+
+export const GET_HISTORY = "GET_HISTORY";
+
+export const GET_ROLES = "GET_ROLES";
+export const ADD_ROLE = "ADD_ROLE";
+export const DELETE_ROLE = "DELETE_ROLE";
+export const ROLES_LOADING = "ROLES_LOADING";
+export const UPDATE_ROLE = "UPDATE_ROLE";

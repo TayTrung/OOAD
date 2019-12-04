@@ -109,9 +109,20 @@ export default class Menu extends Component {
                   </span>
                 </Link>
               </li>
+
               <li>
                 <Link to="/supplier">
                   <i className="fa fa-th" /> <span>Supplier</span>
+           <span className="pull-right-container">
+                    <small className="label pull-right bg-green">new</small>
+                  </span>
+                </Link>
+              </li>
+
+              <li>
+                <Link to="/role">
+                  <i className="fa fa-th" /> <span>Role</span>
+
                   <span className="pull-right-container">
                     <small className="label pull-right bg-green">new</small>
                   </span>
@@ -366,25 +377,6 @@ export default class Menu extends Component {
               <li>
                 <a href="https://adminlte.io/docs">
                   <i className="fa fa-book" /> <span>Documentation</span>
-                </a>
-              </li>
-              <li className="header">LABELS</li>
-              <li>
-                <a href="fake_url">
-                  <i className="fa fa-circle-o text-red" />{" "}
-                  <span>Important</span>
-                </a>
-              </li>
-              <li>
-                <a href="fake_url">
-                  <i className="fa fa-circle-o text-yellow" />{" "}
-                  <span>Warning</span>
-                </a>
-              </li>
-              <li>
-                <a href="fake_url">
-                  <i className="fa fa-circle-o text-aqua" />{" "}
-                  <span>Information</span>
                 </a>
               </li>
             </ul>

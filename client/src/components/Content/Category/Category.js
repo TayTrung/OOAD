@@ -1,13 +1,16 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import CategoryModal from "./CategoryModal";
 import CategoryRow from "./CategoryRow";
 import { connect } from "react-redux";
-import {
-  getCategories,
-  deleteCategory
-} from "../../../actions/categoryActions";
+import { getCategories } from "../../../actions/categoryActions";
 import PropTypes from "prop-types";
 import axios from "axios";
+import Loader from "react-loader";
+
+const mapStateToProps = state => ({
+  categories: state.category.categories,
+  isLoaded: state.category.isLoaded
+});
 
 class Category extends Component {
   state = {
@@ -30,7 +33,7 @@ class Category extends Component {
 
   getTotalDocuments = () => {
     const { query } = this.state;
-    console.log(query);
+
     let newQuery = "";
     if (query === "") newQuery = "undefined";
     else newQuery = query;
@@ -46,7 +49,6 @@ class Category extends Component {
   };
   getPages = () => {
     const { select, query } = this.state;
-    console.log(query);
     let newQuery = "";
     if (query === "") newQuery = "undefined";
     else newQuery = query;
@@ -71,31 +73,63 @@ class Category extends Component {
   };
 
   handleOnChange = e => {
+    console.log(typeof e.target.name + " " + e.target.name);
+    e.persist();
     this.setState({ [e.target.name]: e.target.value }, () => {
-      const { select, currentPage, query } = this.state;
-      this.props.getCategories(select, currentPage, query);
-      this.getPages();
-      this.getTotalDocuments();
+      if (e.target.name === "query") {
+        this.setState({ currentPage: 1 }, () => {
+          this.rerenderPage();
+        });
+      } else {
+        this.rerenderPage();
+      }
     });
   };
 
+  rerenderPage = () => {
+    const { select, currentPage, query } = this.state;
+    this.props.getCategories(select, currentPage, query);
+    this.getPages();
+    this.getTotalDocuments();
+  };
+
   renderCategories = () => {
-    const { categories } = this.state;
-    categories.map(eachCategory => {
-      return (
-        <CategoryRow
-          history={this.props.history}
-          key={eachCategory._id}
-          Category={eachCategory}
-        />
-      );
-    });
+    const { categories } = this.props;
+    return categories.map((eachCategory, index) => (
+      <CategoryRow
+        history={this.props.history}
+        key={eachCategory._id}
+        category={eachCategory}
+        index={index}
+        // deleteCategory={this.props.deleteCategory}
+      />
+    ));
   };
   handleChoosePage = e => {
     this.setState({ currentPage: e }, () => {
       const { select, currentPage, query } = this.state;
       this.props.getCategories(select, currentPage, query);
     });
+  };
+
+  renderSelect = () => {
+    const { sort, select } = this.state;
+    return (
+      <select
+        onChange={this.handleOnChange}
+        name="select"
+        aria-controls="example1"
+        style={{ margin: "0px 5px" }}
+        className="form-control input-sm"
+        value={select}
+      >
+        {sort.map(option => (
+          <option key={option.value} value={option.value}>
+            {option.value}
+          </option>
+        ))}
+      </select>
+    );
   };
 
   renderPageButtons = () => {
@@ -111,11 +145,10 @@ class Category extends Component {
         }
       >
         <a
+          className="paga-link"
           name="currentPage"
+          href="fake_url"
           onClick={() => this.handleChoosePage(eachButton.pageNumber)}
-          aria-controls="example1"
-          data-dt-idx={eachButton.pageNumber}
-          tabIndex={0}
         >
           {eachButton.pageNumber}
         </a>
@@ -124,212 +157,164 @@ class Category extends Component {
   };
 
   render() {
-    const { categories, loading } = this.props.category;
-    const { select, totalDocuments, pages } = this.state;
-
+    const { select, totalDocuments } = this.state;
+    const { isLoaded } = this.props;
     return (
-      <React.Fragment>
-        {/* Content Header (Page header) */}
-        <section className="content-header">
-          <h1>
-            Category
-            {/* <small>Preview</small> */}
-          </h1>
-          <ol className="breadcrumb">
-            <li>
-              <a href="fake_url">
-                <i className="fa fa-dashboard" /> Home
-              </a>
-            </li>
-            <li>
-              <a href="fake_url">Category</a>
-            </li>
-          </ol>
-        </section>
-        {/* Main content */}
-        <section className="content">
-          <div className="row">
-            {/* left column */}
-            <div className="col-md-12">
-              <div className="box">
-                <div className="box-header" style={{ marginTop: "5px" }}>
-                  <div style={{ paddingLeft: "5px" }} className="col-md-8">
-                    <h3 className="box-title">Data Table With Full Features</h3>
-                  </div>
+      <Fragment>
+        {!isLoaded ? (
+          <Loader></Loader>
+        ) : (
+          <Fragment>
+            {/* Content Header (Page header) */}
+            <section className="content-header">
+              <h1>
+                Category
+                {/* <small>Preview</small> */}
+              </h1>
+              <ol className="breadcrumb">
+                <li>
+                  <a href="fake_url">
+                    <i className="fa fa-dashboard" /> Home
+                  </a>
+                </li>
+                <li>
+                  <a href="fake_url">Category</a>
+                </li>
+              </ol>
+            </section>
+            {/* Main content */}
+            <section className="content">
+              <div className="row">
+                {/* left column */}
+                <div className="col-md-12">
+                  <div className="box">
+                    <div className="box-header" style={{ marginTop: "5px" }}>
+                      <div style={{ paddingLeft: "5px" }} className="col-md-8">
+                        <h3 className="box-title">
+                          Data Table With Full Features
+                        </h3>
+                      </div>
 
-                  <div className="col-md-4">
-                    <CategoryModal />
-                  </div>
-                </div>
-                {/* /.box-header */}
-                <div className="box-body">
-                  <div
-                    id="example1_wrapper"
-                    className="dataTables_wrapper form-inline dt-bootstrap"
-                  >
-                    <div className="row">
-                      <div>
-                        <div className="col-sm-6">
-                          <div
-                            className="dataTables_length"
-                            id="example1_length"
-                          >
-                            <label>
-                              Show
-                              <select
-                                onChange={this.handleOnChange}
-                                name="select"
-                                aria-controls="example1"
-                                style={{ margin: "0px 5px" }}
-                                className="form-control input-sm"
-                                value={this.state.select}
+                      <div className="col-md-4">
+                        <CategoryModal />
+                      </div>
+                    </div>
+                    {/* /.box-header */}
+                    <div className="box-body">
+                      <div
+                        id="example1_wrapper"
+                        className="dataTables_wrapper form-inline dt-bootstrap"
+                      >
+                        <div className="row">
+                          <div>
+                            <div className="col-sm-6">
+                              <div
+                                className="dataTables_length"
+                                id="example1_length"
                               >
-                                {this.state.sort.map(option => (
-                                  <option
-                                    key={option.value}
-                                    value={option.value}
-                                  >
-                                    {option.value}
-                                  </option>
-                                ))}
-                              </select>
-                              entries
-                            </label>
+                                <label>
+                                  Show
+                                  {this.renderSelect()}
+                                  entries
+                                </label>
+                              </div>
+                            </div>
+                            <div className="col-sm-6">
+                              <div
+                                id="example1_filter"
+                                className="dataTables_filter"
+                              >
+                                <label style={{ float: "right" }}>
+                                  Search:
+                                  <input
+                                    type="search"
+                                    name="query"
+                                    style={{ margin: "0px 5px" }}
+                                    className="form-control input-sm"
+                                    placeholder="Find me  "
+                                    aria-controls="example1"
+                                    onChange={this.handleOnChange}
+                                    value={this.state.query}
+                                  />
+                                </label>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                        <div className="col-sm-6">
-                          <div
-                            id="example1_filter"
-                            className="dataTables_filter"
-                          >
-                            <label style={{ float: "right" }}>
-                              Search:
-                              <input
-                                type="search"
-                                name="query"
-                                style={{ margin: "0px 5px" }}
-                                className="form-control input-sm"
-                                placeholder="Find me  "
-                                aria-controls="example1"
-                                onChange={this.handleOnChange}
-                                value={this.state.query}
-                              />
-                            </label>
+
+                        <div className="row">
+                          <div className="col-sm-12">
+                            <table
+                              id="example1"
+                              className="table table-bordered table-striped"
+                            >
+                              <thead>
+                                <tr>
+                                  <th style={{ width: "10%" }}>#</th>
+                                  <th style={{ width: "20%" }}>Category</th>
+                                  <th style={{ width: "20%" }}>Created date</th>
+                                  <th style={{ width: "20%" }}>Creator</th>
+                                  <th style={{ width: "30%" }}>Action</th>
+                                </tr>
+                              </thead>
+                              <tbody>{this.renderCategories()}</tbody>
+                              <tfoot>
+                                <tr>
+                                  <th>#</th>
+                                  <th>Category</th>
+                                  <th>Created date</th>
+                                  <th>Creator</th>
+                                  <th>Action</th>
+                                </tr>
+                              </tfoot>
+                            </table>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-sm-5">
+                            <div
+                              className="dataTables_info"
+                              id="example1_info"
+                              role="status"
+                              aria-live="polite"
+                            >
+                              Showing 1 to {select} of {totalDocuments} entries
+                            </div>
+                          </div>
+                          <div className="col-sm-7">
+                            <div
+                              className="dataTables_paginate paging_simple_numbers"
+                              id="example1_paginate"
+                            >
+                              <ul
+                                className="pagination"
+                                style={{ float: "right" }}
+                              >
+                                {this.renderPageButtons()}
+                              </ul>
+                            </div>
                           </div>
                         </div>
                       </div>
+                      {/*/.col (left) */}
                     </div>
-
-                    <div className="row">
-                      <div className="col-sm-12">
-                        <table
-                          id="example1"
-                          className="table table-bordered table-striped"
-                        >
-                          <thead>
-                            <tr>
-                              <th style={{ width: "10%" }}>#</th>
-                              <th style={{ width: "20%" }}>Category</th>
-                              <th style={{ width: "20%" }}>Created date</th>
-                              <th style={{ width: "20%" }}>Creator</th>
-                              <th style={{ width: "30%" }}>Action</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {categories.map((eachCategory, index) => (
-                              <CategoryRow
-                                history={this.props.history}
-                                key={eachCategory._id}
-                                Category={eachCategory}
-                                index={index}
-                                // deleteCategory={this.props.deleteCategory}
-                              />
-                            ))}
-                          </tbody>
-                          <tfoot>
-                            <tr>
-                              <th>#</th>
-                              <th>Category</th>
-                              <th>Created date</th>
-                              <th>Creator</th>
-                              <th>Action</th>
-                            </tr>
-                          </tfoot>
-                        </table>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-sm-5">
-                        <div
-                          className="dataTables_info"
-                          id="example1_info"
-                          role="status"
-                          aria-live="polite"
-                        >
-                          Showing 1 to {select} of {totalDocuments} entries
-                        </div>
-                      </div>
-                      <div className="col-sm-7">
-                        <div
-                          className="dataTables_paginate paging_simple_numbers"
-                          id="example1_paginate"
-                        >
-                          <ul className="pagination" style={{ float: "right" }}>
-                            <li
-                              className="paginate_button previous disabled"
-                              id="example1_previous"
-                            >
-                              <a
-                                href="fake_url"
-                                aria-controls="example1"
-                                data-dt-idx={0}
-                                tabIndex={0}
-                              >
-                                Previous
-                              </a>
-                            </li>
-                            {this.renderPageButtons()}
-                            <li
-                              className="paginate_button next disabled"
-                              id="example1_next"
-                            >
-                              <a
-                                href="fake_url"
-                                aria-controls="example2"
-                                data-dt-idx={this.state.pages.length + 1}
-                                tabIndex={0}
-                              >
-                                Next
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
+                    {/* /.row */}
                   </div>
-                  {/*/.col (left) */}
                 </div>
-                {/* /.row */}
               </div>
-            </div>
-          </div>
-        </section>
-        {/* /.content */}
-      </React.Fragment>
+            </section>
+            {/* /.content */}
+          </Fragment>
+        )}
+      </Fragment>
     );
   }
 }
 
 Category.propTypes = {
   getCategories: PropTypes.func.isRequired,
-  category: PropTypes.object.isRequired
+  categories: PropTypes.array.isRequired,
+  isLoaded: PropTypes.bool.isRequired
 };
 
-const mapStateToProps = state => ({
-  category: state.category
-});
-
-export default connect(
-  mapStateToProps,
-  { getCategories, deleteCategory }
-)(Category);
+export default connect(mapStateToProps, { getCategories })(Category);

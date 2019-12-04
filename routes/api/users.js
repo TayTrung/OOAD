@@ -1,6 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
+const bcrypt = require("bcryptjs");
+const config = require("config");
+const jwt = require("jsonwebtoken");
+
+
 //User Model
 const User = require("../../models/User");
 
@@ -114,6 +119,86 @@ router.delete("/:id", (req, res) => {
   User.findByIdAndDelete(req.params.id)
     .then(item => res.json(item)) //Return lại item đã xóa
     .catch(err => res.json(err)); //Catch lỗi rồi return ra
+});
+
+module.exports = router;
+
+//TRUNG CODE ==========================================
+
+
+//@route POST api/users
+//@desc Register new user
+//@access Public
+router.post("/", (req, res) => {
+  const {
+    idRole,
+    username,
+    password,
+    fullName,
+    phoneNumber,
+    address
+  } = req.body;
+
+  //Simple validation
+  if (
+    !username ||
+    !idRole ||
+    !fullName ||
+    !phoneNumber ||
+    !address ||
+    !password
+  ) {
+    return res.status(400).json({ msg: "Please enter all fields" });
+  }
+
+  //Check for existing user
+  User.findOne({ username }).then(user => {
+    if (user) {
+      return res.status(400).json({ msg: "User already exist" });
+    }
+    const newUser = new User({
+      username,
+      idRole,
+      fullName,
+      phoneNumber,
+      address,
+      password
+    });
+
+    //Create salt & hash
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(newUser.password, salt, (err, hash) => {
+        if (err) throw err;
+        newUser.password = hash;
+        newUser
+          .save()
+          .then(user => {
+            jwt.sign(
+              {
+                id: user.id
+              },
+              config.get("jwtSecret"),
+              { expiresIn: 3600 },
+              (err, token) => {
+                if (err) throw err;
+
+                res.json({
+                  token,
+                  user: {
+                    name: user.username,
+                    id: user.id,
+                    idRole: user.idRole,
+                    fullName: user.fullName
+                  }
+                });
+              }
+            );
+          })
+
+          .catch(err => res.json(err));
+      });
+    });
+  });
 });
 
 module.exports = router;

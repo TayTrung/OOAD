@@ -3,32 +3,47 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { addCategory } from "../../../actions/categoryActions";
 
+const mongoose = require("mongoose");
+
 class CategoryModal extends Component {
   state = {
-    name: ""
+    name: "",
+    _id: 0,
+    inputErrors: false,
+    msg: ""
   };
-
   onChange = e => {
     console.log(e.target.value);
 
-    this.setState({ [e.target.name]: e.target.value });
-  };
+    const { name, value } = e.target;
+    let msg = "";
 
+    //Validation
+    const isPassed = this.validateName(value);
+    const inputErrors = isPassed ? false : true;
+    if (!isPassed)
+      msg =
+        "Name of category can only contain only letters, numbers, underscores and spaces";
+
+    this.setState({ [name]: value, msg, inputErrors });
+  };
+  validateName = name => {
+    return new RegExp(/^[a-zA-Z0-9_-_ ]*$/).test(name);
+  };
   onSubmit = e => {
     e.preventDefault();
 
+    const { name } = this.state;
     const newItem = {
-      name: this.state.name,
-      createAt: Date.now()
+      name,
+      createAt: Date.now(),
+      _id: mongoose.Types.ObjectId()
     };
+
     this.props.addCategory(newItem);
 
     // Close modal
     document.getElementById("triggerButton").click();
-
-    //Toggle
-
-    // this.props.toggle();
   };
   handleOnClick = () => {
     // window.location.replace("/category?page=0&id=2");
@@ -78,6 +93,20 @@ class CategoryModal extends Component {
                 </span>
               </div>
               <div className="modal-body">
+                {this.state.msg ? (
+                  <div className="alert alert-danger alert-dismissible">
+                    {/* <button
+                  type="button"
+                  className="close"
+                  data-dismiss="alert"
+                  aria-hidden="true"
+                >
+                  ×
+                </button> */}
+
+                    {this.state.msg}
+                  </div>
+                ) : null}
                 <div className="form-group">
                   <label htmlFor="recipient-name" className="col-form-label">
                     Name:
@@ -86,7 +115,7 @@ class CategoryModal extends Component {
                     type="text"
                     className="form-control"
                     id="name"
-                    placeholder="Add category"
+                    placeholder="Category name"
                     name="name"
                     onChange={this.onChange}
                   />
@@ -104,6 +133,11 @@ class CategoryModal extends Component {
                   type="button"
                   onClick={this.onSubmit}
                   className="btn btn-primary"
+                  disabled={
+                    !this.state.inputErrors && this.state.name !== ""
+                      ? false
+                      : true
+                  }
                 >
                   Add category
                 </button>
@@ -118,7 +152,4 @@ class CategoryModal extends Component {
 const mapStateToProps = state => ({
   category: state.category
 });
-export default connect(
-  mapStateToProps,
-  { addCategory }
-)(CategoryModal);
+export default connect(mapStateToProps, { addCategory })(CategoryModal);

@@ -1,33 +1,41 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 
-const categories = require("./routes/api/categories");
-const suppliers = require("./routes/api/suppliers");
-const users = require("./routes/api/users");
+
+const config = require("config");
 
 const app = express();
 
 //Bodyparese Middleware
-app.use(bodyParser.json());
+app.use(express.json());
 
 //DB Config
-const db = require("./config/keys").mongoURI;
+const db = config.get("mongoURI");
 
 //Connect to Mongo
 mongoose
   .connect(db, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useFindAndModify: false
+    useFindAndModify: false,
+    useCreateIndex: true
   })
-  .then(() => console.log("Mongo DB Connected")) //Kết nối thành công
-  .catch(err => console.log(err)); //Lỗi kết nối với đb
+  .then(() => console.log("Mongo DB Connected"))
+  .catch(err => console.log(err));
 
-//Use routes (Mỗi lần tạo 1 route mới thì phải use nó ở đây thì mới chạy đc)
-app.use("/api/category", categories);
-app.use("/api/supplier", suppliers);
-app.use("/api/user", users);
+// mongoose.connection
+//   .collection("counters")
+//   .insertOne({ _id: "Category", sequence_value: 0 }, (err, res) => {
+//     if (err) throw err;
+//     console.log("Document inserted");
+//   });
+
+app.use("/api/category", require("./routes/api/categories"));
+app.use("/api/user", require("./routes/api/users"));
+app.use("/api/auth", require("./routes/api/authentication"));
+app.use("/api/role", require("./routes/api/roles"));
+app.use("/api/supplier", require("./routes/api/suppliers");
+
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
