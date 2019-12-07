@@ -6,10 +6,21 @@ import authReducer from "./authReducer";
 import historyReducer from "./historyReducer";
 import roleReducer from "./roleReducer";
 
+import memberReducer from "./memberReducer";
+import productReducer from "./productReducer";
+import invoiceReducer from "./invoiceReducer";
+import payslipReducer from "./payslipReducer";
+import notificationReducer from "./notificationReducer";
+
 export default combineReducers({
   category: categoryReducer,
   error: errorReducer,
   auth: authReducer,
   history: historyReducer,
-  role: roleReducer
+  role: roleReducer,
+  member: memberReducer,
+  product: productReducer,
+  invoice: invoiceReducer,
+  payslip: payslipReducer,
+  showNoti: notificationReducer,
 });

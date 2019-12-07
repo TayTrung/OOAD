@@ -22,3 +22,31 @@ export const ADD_ROLE = "ADD_ROLE";
 export const DELETE_ROLE = "DELETE_ROLE";
 export const ROLES_LOADING = "ROLES_LOADING";
 export const UPDATE_ROLE = "UPDATE_ROLE";
+export const GET_PAYSLIPS = "GET_PAYSLIPS";
+export const ADD_PAYSLIP = "ADD_PAYSLIP";
+export const DELETE_PAYSLIP = "DELETE_PAYSLIP";
+export const GET_PAYSLIP = "GET_PAYSLIP";
+export const PAYSLIPS_LOADING = "PAYSLIPS_LOADING";
+
+export const GET_MEMBERS = "GET_MEMBERS";
+export const ADD_MEMBER = "ADD_MEMBER";
+export const GET_MEMBER = "GET_MEMBER";
+export const DELETE_MEMBER = "DELETE_MEMBER";
+export const MEMBERS_LOADING = "MEMBERS_LOADING";
+export const GET_SEARCH_MEMBERS = "GET_SEARCH_MEMBERS";
+
+export const GET_PRODUCTS = "GET_PRODUCTS";
+export const ADD_PRODUCT = "ADD_PRODUCT";
+export const GET_PRODUCT = "GET_PRODUCT";
+export const DELETE_PRODUCT = "DELETE_PRODUCT";
+export const PRODUCTS_LOADING = "PRODUCTS_LOADING";
+
+export const GET_INVOICES = "GET_INVOICES";
+export const ADD_INVOICE = "ADD_INVOICE";
+export const GET_INVOICE = "GET_INVOICE";
+export const DELETE_INVOICE = "DELETE_INVOICE";
+export const INVOICES_LOADING = "INVOICES_LOADING";
+
+export const SHOW_NOTI = "SHOW_NOTI";
+
+export const ADD_REDUCER = 'ADD_REDUCER';

@@ -14,14 +14,17 @@ const mapStateToProps = state => ({
 
 class Category extends Component {
   state = {
-    sort: [{ value: "1" }, { value: "2" }, { value: "3" }],
-    select: "2",
+    sort: [{ value: "5" }, { value: "10" }, { value: "20" }],
+    select: "5",
     currentPage: 1,
     pages: [],
     totalDocuments: 0,
     query: ""
   };
 
+  resetState = () => {
+    this.setState({ select: "5", currentPage: 1, query: "" })
+  }
   componentDidMount() {
     const { select, currentPage, query } = this.state;
     this.getTotalDocuments();
@@ -42,11 +45,13 @@ class Category extends Component {
       .get(`/api/category/count/${newQuery}`)
       .then(response => {
         this.setState({ totalDocuments: response.data });
+        console.log(response.data);
       })
       .catch(er => {
         console.log(er.response);
       });
   };
+
   getPages = () => {
     const { select, query } = this.state;
     let newQuery = "";

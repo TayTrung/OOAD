@@ -3,18 +3,19 @@ import { connect } from "react-redux";
 import { deleteCategory } from "../../../actions/categoryActions";
 import { pushHistory } from "../../../actions/historyActions";
 class CategoryRow extends Component {
+
   convertDate = date => {
     const newDate = new Date(date);
     let year = newDate.getFullYear();
     let month = newDate.getMonth() + 1;
     let dt = newDate.getDate();
 
-    if (dt < 10) {
-      dt = "0" + dt;
-    }
-    if (month < 10) {
-      month = "0" + month;
-    }
+    dt = dt < 10 ? `0${dt}` : dt;
+
+    month = month < 10 ? `0${month}` : month;
+    // if (month < 10) {
+    //   month = "0" + month;
+    // }
 
     return year + "-" + month + "-" + dt;
   };
@@ -23,9 +24,21 @@ class CategoryRow extends Component {
   };
   handleDelete = id => {
     // console.log(id);
+    // this.setState(prevState => {
+    //   let newState = { ...prevState }
+    //   let { categories } = newState
 
+    //   categories = categories.filter(c => c.id !== id)
+
+    //   return {
+    //     ...newState,
+    //     categories
+    //   }
+    // })
+    this.props.resetState();
     this.props.deleteCategory(id);
   };
+
   render() {
     const { category, index } = this.props;
 

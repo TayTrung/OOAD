@@ -58,7 +58,6 @@ router.get("/count/:query", (req, res) => {
   let newQuery = "";
   if (query === "undefined") newQuery = "";
   else newQuery = query;
-
   Category.find({ name: { $regex: newQuery, $options: "i" } })
     .countDocuments()
     .sort({ createAt: -1 })

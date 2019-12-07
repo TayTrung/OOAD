@@ -33,6 +33,11 @@ app.use("/api/user", require("./routes/api/users"));
 app.use("/api/auth", require("./routes/api/authentication"));
 app.use("/api/role", require("./routes/api/roles"));
 
+app.use("/api/member", require("./routes/api/members"));
+app.use("/api/product", require("./routes/api/products"));
+app.use("/api/invoice", require("./routes/api/invoices"));
+app.use("/api/payslip", require("./routes/api/payslips"));
+
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
