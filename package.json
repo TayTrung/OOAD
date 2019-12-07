@@ -15,7 +15,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "concurrently": "^4.1.2",
-    "config": "^3.2.3",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.5",
@@ -29,6 +29,17 @@
     "sudo": "^1.0.3"
   },
   "devDependencies": {
-    "nodemon": "^1.19.3"
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.6.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-react": "^7.16.0",
+    "husky": "^3.0.9",
+    "lint-staged": "^9.4.3",
+    "nodemon": "^1.19.3",
+    "prettier": "^1.19.1",
+    "pretty-quick": "^2.0.1"
   }
 }

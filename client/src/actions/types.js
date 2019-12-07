@@ -1,52 +1,63 @@
-export const GET_CATEGORIES = "GET_CATEGORIES";
-export const UPDATE_CATEGORY = "UPDATE_CATEGORY";
-export const ADD_CATEGORY = "ADD_CATEGORY";
-export const DELETE_CATEGORY = "DELETE_CATEGORY";
-export const CATEGORIES_LOADING = "CATEGORIES_LOADING";
+export const GET_CATEGORIES = 'GET_CATEGORIES'
+export const UPDATE_CATEGORY = 'UPDATE_CATEGORY'
+export const ADD_CATEGORY = 'ADD_CATEGORY'
+export const DELETE_CATEGORY = 'DELETE_CATEGORY'
+export const CATEGORIES_LOADING = 'CATEGORIES_LOADING'
 
-export const USER_LOADING = "USER_LOADING";
-export const USER_LOADED = "USER_LOADED";
-export const AUTH_ERROR = "AUTH_ERROR";
-export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
-export const LOGIN_FAIL = "LOGIN_FAIL";
-export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
-export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
-export const REGISTER_FAIL = "REGISTER_FAIL";
-export const GET_ERRORS = "GET_ERRORS";
-export const CLEAR_ERRORS = "CLEAR_ERRORS";
+export const USER_LOADING = 'USER_LOADING'
+export const USER_LOADED = 'USER_LOADED'
+export const AUTH_ERROR = 'AUTH_ERROR'
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
+export const LOGIN_FAIL = 'LOGIN_FAIL'
+export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS'
+export const REGISTER_SUCCESS = 'REGISTER_SUCCESS'
+export const REGISTER_FAIL = 'REGISTER_FAIL'
+export const GET_ERRORS = 'GET_ERRORS'
+export const CLEAR_ERRORS = 'CLEAR_ERRORS'
 
-export const GET_HISTORY = "GET_HISTORY";
+export const GET_HISTORY = 'GET_HISTORY'
 
-export const GET_ROLES = "GET_ROLES";
-export const ADD_ROLE = "ADD_ROLE";
-export const DELETE_ROLE = "DELETE_ROLE";
-export const ROLES_LOADING = "ROLES_LOADING";
-export const UPDATE_ROLE = "UPDATE_ROLE";
-export const GET_PAYSLIPS = "GET_PAYSLIPS";
-export const ADD_PAYSLIP = "ADD_PAYSLIP";
-export const DELETE_PAYSLIP = "DELETE_PAYSLIP";
-export const GET_PAYSLIP = "GET_PAYSLIP";
-export const PAYSLIPS_LOADING = "PAYSLIPS_LOADING";
+export const GET_ROLES = 'GET_ROLES'
+export const ADD_ROLE = 'ADD_ROLE'
+export const DELETE_ROLE = 'DELETE_ROLE'
+export const ROLES_LOADING = 'ROLES_LOADING'
+export const UPDATE_ROLE = 'UPDATE_ROLE'
+export const GET_PAYSLIPS = 'GET_PAYSLIPS'
+export const ADD_PAYSLIP = 'ADD_PAYSLIP'
+export const DELETE_PAYSLIP = 'DELETE_PAYSLIP'
+export const GET_PAYSLIP = 'GET_PAYSLIP'
+export const PAYSLIPS_LOADING = 'PAYSLIPS_LOADING'
 
-export const GET_MEMBERS = "GET_MEMBERS";
-export const ADD_MEMBER = "ADD_MEMBER";
-export const GET_MEMBER = "GET_MEMBER";
-export const DELETE_MEMBER = "DELETE_MEMBER";
-export const MEMBERS_LOADING = "MEMBERS_LOADING";
-export const GET_SEARCH_MEMBERS = "GET_SEARCH_MEMBERS";
+export const GET_MEMBERS = 'GET_MEMBERS'
+export const ADD_MEMBER = 'ADD_MEMBER'
+export const GET_MEMBER = 'GET_MEMBER'
+export const DELETE_MEMBER = 'DELETE_MEMBER'
+export const MEMBERS_LOADING = 'MEMBERS_LOADING'
+export const GET_SEARCH_MEMBERS = 'GET_SEARCH_MEMBERS'
 
-export const GET_PRODUCTS = "GET_PRODUCTS";
-export const ADD_PRODUCT = "ADD_PRODUCT";
-export const GET_PRODUCT = "GET_PRODUCT";
-export const DELETE_PRODUCT = "DELETE_PRODUCT";
-export const PRODUCTS_LOADING = "PRODUCTS_LOADING";
+export const GET_PRODUCTS = 'GET_PRODUCTS'
+export const ADD_PRODUCT = 'ADD_PRODUCT'
+export const GET_PRODUCT = 'GET_PRODUCT'
+export const DELETE_PRODUCT = 'DELETE_PRODUCT'
+export const PRODUCTS_LOADING = 'PRODUCTS_LOADING'
 
-export const GET_INVOICES = "GET_INVOICES";
-export const ADD_INVOICE = "ADD_INVOICE";
-export const GET_INVOICE = "GET_INVOICE";
-export const DELETE_INVOICE = "DELETE_INVOICE";
-export const INVOICES_LOADING = "INVOICES_LOADING";
+export const GET_INVOICES = 'GET_INVOICES'
+export const ADD_INVOICE = 'ADD_INVOICE'
+export const GET_INVOICE = 'GET_INVOICE'
+export const DELETE_INVOICE = 'DELETE_INVOICE'
+export const INVOICES_LOADING = 'INVOICES_LOADING'
 
-export const SHOW_NOTI = "SHOW_NOTI";
+export const SHOW_NOTI = 'SHOW_NOTI'
 
-export const ADD_REDUCER = 'ADD_REDUCER';
+export const ADD_REDUCER = 'ADD_REDUCER'
+export const GET_SUPPLIERS = 'GET_SUPPLIERS'
+export const ADD_SUPPLIER = 'ADD_SUPPLIER'
+export const DELETE_SUPPLIER = 'DELETE_SUPPLIER'
+export const GET_SUPPLIER = 'GET_SUPPPLIER'
+export const SUPPLIERS_LOADING = 'SUPPLIERS_LOADING'
+
+export const GET_USERS = 'GET_USERS'
+export const ADD_USER = 'ADD_USER'
+export const DELETE_USER = 'DELETE_USER'
+export const GET_USER = 'GET_USER'
+export const USERS_LOADING = 'USERS_LOADING'
